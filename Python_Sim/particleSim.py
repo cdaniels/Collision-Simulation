@@ -32,8 +32,8 @@ class World(pl.window.Window):
             super(World, self).__init__(resizable=True, config=config, caption='Collisions')
         except:
             super(World, self).__init__(resizable=True , caption='Collisions')
-       # self.pos_array = []
-        #self.vel_array = []
+        self.pos_array = []
+        self.vel_array = []
         self.setup()
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -42,7 +42,7 @@ class World(pl.window.Window):
         self.height = 480
         self.batch = pl.graphics.Batch()
         self.boxSize = 2.0
-        self.ballNumber = 10 # initial parameters
+        self.ballNumber = 100 # initial parameters
         self.ballSize = 0.3
         self.collisionNumber = 0
 
@@ -70,16 +70,20 @@ class World(pl.window.Window):
         #-----------------------------------------#
         
         self.box = CollisionBox(array([0.0,0.0,-7.0]),self.boxSize)
-        self.ballList = []
+        #self.radius = 1
+        #self.pos_array =[]
+        #self.vel_array =[]
+        #self.ballList = []
         for i in range(self.ballNumber):
             rval = self.boxSize/1.5
             randVec = array([uniform(-rval,rval),uniform(-rval,rval),uniform(-rval,rval)])
             start_vel = randVec*.02
             #start_vel = 0.0
-            self.ballList.append(Particle(randVec,start_vel,self.ballSize))
-           # self.pos_array.append(randVec)
-           # self.vel_array.append(start_vel)
-    
+            #self.ballList.append(Particle(randVec,start_vel,self.ballSize))
+            self.pos_array.append(randVec)
+            self.vel_array.append(start_vel)
+            
+
         self.InitGL(self.width, self.height)
         
         pl.clock.schedule_interval(self.update, 1/60.0) # update at 60Hz
@@ -156,8 +160,18 @@ class World(pl.window.Window):
         gl.glMatrixMode(gl.GL_MODELVIEW)
         
     
+    def drawParticle(self,position):
+        #Set position
+        glTranslatef(position[0],position[1],position[2])
+        
+        #Draw sphere
+        glColor3f(0.0,0.0,0.5)
+        sphere = gluNewQuadric()
+        gluSphere(sphere,self.ballSize,10,10)
+
     def drawBalls(self):
-        for i in range(len(self.ballList)):
+       # for i in range(len(self.ballList)):
+        for i in range(self.ballNumber):     
             glLoadIdentity()
             glTranslatef(self.box.getPosition()[0],\
                          self.box.getPosition()[1],\
@@ -167,34 +181,46 @@ class World(pl.window.Window):
             glRotatef(ytot,0.0,1.0,0.0)       # Rotate on Y 
             glRotatef(ztot,0.0,0.0,1.0)       # Rotate on Z
             
-            iball = self.ballList[i]
-            ipos = iball.getPosition()
+           # iball = self.ballList[i]
+            #ipos = iball.getPosition()
+            ipos = self.pos_array[i]
+            ivel = self.vel_array[i]
             
-            iball.drawParticle()
-            iball.update()
+            self.drawParticle(ipos)
+            #iball.update()
+            ipos += ivel
             
             #collision detection
             bound = self.boxSize
             if (ipos[0] - self.ballSize <= -bound)or(ipos[0] + self.ballSize >= bound):
-                iball.velocity[0] *= -1
+                #iball.velocity[0] *= -1
+                ivel[0] *= -1
             if (ipos[1] - self.ballSize <= -bound)or(ipos[1] + self.ballSize >= bound):
-                iball.velocity[1] *= -1
+                #iball.velocity[1] *= -1
+                ivel[1] *= -1
             if (ipos[2] - self.ballSize <= -bound)or(ipos[2] + self.ballSize >= bound):
-                iball.velocity[2] *= -1
+                #iball.velocity[2] *= -1
+                ivel[2] *= -1
+
             
             # ball-ball collisions
-            for j in range(len(self.ballList)):
-                jball = self.ballList[j]
+           # for j in range(len(self.ballList)):
+            for j in range(self.ballNumber):
+                #jball = self.ballList[j]
                 if (i != j):
-                    self.resolveCollisions(iball,jball)
+                    self.resolveCollisions(i,j)
 
-    def resolveCollisions(self,ball_1,ball_2):
-        iball = ball_1
-        ipos = iball.getPosition()
-        ivel = iball.getVelocity()
-        jball = ball_2
-        jpos = jball.getPosition()
-        jvel = jball.getVelocity()
+    def resolveCollisions(self,i,j):
+        #iball = ball_1
+        #ipos = iball.getPosition()
+        #ivel = iball.getVelocity()
+        #jball = ball_2
+        #jpos = jball.getPosition()
+        #jvel = jball.getVelocity()
+        ipos = self.pos_array[i]
+        ivel = self.vel_array[i]
+        jpos = self.pos_array[j]
+        jvel = self.vel_array[j]
         
         diameter = self.ballSize*2
         seperation = spatial.distance.euclidean(ipos, jpos)
@@ -215,8 +241,10 @@ class World(pl.window.Window):
             jProj = multiply(ncollisionV,jDiff)
             newi = add(ivel,iProj)
             newj = add(jvel,jProj)
-            iball.setVelocity(newi)
-            jball.setVelocity(newj)
+            #iball.setVelocity(newi)
+            #jball.setVelocity(newj)
+            self.vel_array[i] = newi
+            self.vel_array[j] = newj
 
             #increment collision number
             self.collisionNumber+=1

@@ -1,0 +1,172 @@
+"""
+drawables.py
+collection of drawable objects for displaying via
+opengl for the particleSim project.
+
+----------------
+the objects are
+----------------
+box object:      for collision boundary
+particle object: for collisions
+
+and for the 2d overlay
+rectangle:
+textwidget:
+
+---------------------------
+rectangle and textwidget classes taken from example at
+http://www.pyglet.org/doc/programming_guide/user_editable_text.html
+coded by Chad Daniels on 1/8/2013
+"""
+import pyglet
+from pyglet.gl import *
+
+
+class CollisionBox(object):
+    def __init__(self,position,size=1.0):
+        self.sideLength = size
+        self.position = position
+        self.yrot = 0.0
+        self.ytot = 0.0
+        self.xrot = 0.0
+        self.xtot = 0.0
+        self.zrot = 0.0
+        self.ztot = 0.0
+        self.color =[0.0,1.0,0.0]
+        pass
+
+    def drawBox(self):
+        glTranslatef(self.position[0],self.position[1],self.position[2])      # Move Into The Screen
+        self.xtot += self.xrot
+        self.ytot += self.yrot
+        self.ztot += self.zrot
+        glRotatef(self.xtot,1.0,0.0,0.0)       # Rotate The Cube On X
+        glRotatef(self.ytot,0.0,1.0,0.0)       # Rotate The Cube On Y 
+        glRotatef(self.ztot,0.0,0.0,1.0)       # Rotate The Cube On Z
+        
+        ### Draw Box
+        boxRGB = self.color
+        r = self.sideLength          # sets the length of each side
+
+        glBegin(GL_LINE_LOOP)           # Start Drawing The Cube
+        glColor3f(boxRGB[0],boxRGB[1],boxRGB[2])          # Set The Color To Green
+        glVertex3f( r, r,-r)      # Top Right Of The Quad (Top)
+        glVertex3f(-r, r,-r)      # Top Left Of The Quad (Top)
+        glVertex3f(-r, r, r)      # Bottom Left Of The Quad (Top)
+        glVertex3f( r, r, r)      # Bottom Right Of The Quad (Top)
+        glEnd()
+        
+        glBegin(GL_LINE_LOOP)
+        glColor3f(boxRGB[0],boxRGB[1],boxRGB[2])         
+        glVertex3f( r,-r, r)      # Top Right Of The Quad (Bottom)
+        glVertex3f(-r,-r, r)      # Top Left Of The Quad (Bottom)
+        glVertex3f(-r,-r,-r)      # Bottom Left Of The Quad (Bottom)
+        glVertex3f( r,-r,-r)      # Bottom Right Of The Quad (Bottom)
+        glEnd()
+        
+        glBegin(GL_LINES)
+        glColor3f(boxRGB[0],boxRGB[1],boxRGB[2])          
+        glVertex3f( r, r, r)      # Top Right Of The Quad (Front)
+        glVertex3f( r,-r, r)      # Bottom Right Of The Quad (Front)
+        glVertex3f(-r, r, r)      # Top Left Of The Quad (Front)
+        glVertex3f(-r,-r, r)      # Bottom Left Of The Quad (Front)
+        glEnd()
+        
+        glBegin(GL_LINES) 
+        glColor3f(boxRGB[0],boxRGB[1],boxRGB[2])         
+        glVertex3f( r,-r,-r)      # Bottom Left Of The Quad (Back)
+        glVertex3f( r, r,-r)      # Top Left Of The Quad (Back)
+        glVertex3f(-r,-r,-r)      # Bottom Right Of The Quad (Back)
+        glVertex3f(-r, r,-r)      # Top Right Of The Quad (Back)
+        glEnd()
+
+        # Done Drawing The Box"""
+
+    def rotateBox(self,xrot,yrot,zrot):
+        self.xrot = xrot
+        self.yrot = yrot
+        self.zrot = zrot
+
+    def rotateX(self,xrot):
+        self.xrot = xrot
+
+    def rotateY(self,yrot):
+        self.yrot = yrot
+
+    def rotateZ(self,yrot):
+        self.zrot = zrot
+
+    def getRotation(self):
+        return self.xtot,self.ytot,self.ztot
+
+    def getPosition(self):
+        return self.position
+
+
+class Particle(object):
+    def __init__(self,position,velocity,radius=0.1):
+        self.radius = radius
+        self.position = position
+        self.velocity = velocity
+        pass
+
+     def drawParticle(self):
+        #Set position
+        glTranslatef(self.position[0],self.position[1],self.position[2])
+        
+        #Draw sphere
+        glColor3f(0.0,0.0,0.5)
+        sphere = gluNewQuadric()
+        gluSphere(sphere,self.radius,10,10)
+
+    def update(self):
+        self.position += self.velocity
+
+    def getPosition(self):
+        return self.position
+
+    def getVelocity(self):
+        return self.velocity
+
+    def setPosition(self,pos):
+        self.position = pos
+
+    def setVelocity(self,vel):
+        self.velocity = vel
+
+    def addVelocity(self,added_vel):
+        self.velocity += added_vel
+
+class Rectangle(object):
+    '''Draws a rectangle into a batch.'''
+    def __init__(self, x1, y1, x2, y2, batch):
+        self.vertex_list = batch.add(4, pyglet.gl.GL_QUADS, None,
+            ('v2i', [x1, y1, x2, y1, x2, y2, x1, y2]),
+            ('c4B', [200, 200, 220, 255] * 4)
+        )
+
+class TextWidget(object):
+    def __init__(self, text, x, y, width, batch):
+        self.document = pyglet.text.document.UnformattedDocument(text)
+        self.document.set_style(0, len(self.document.text), 
+            dict(color=(0, 0, 0, 255))
+        )
+        font = self.document.get_font()
+        height = font.ascent - font.descent
+
+        self.layout = pyglet.text.layout.IncrementalTextLayout(
+            self.document, width, height, multiline=False, batch=batch)
+        self.caret = pyglet.text.caret.Caret(self.layout)
+
+        self.layout.x = x
+        self.layout.y = y
+
+        # Rectangular outline
+        pad = 2
+        self.rectangle = Rectangle(x - pad, y - pad, 
+                                   x + width + pad, y + height + pad, batch)
+
+    def hit_test(self, x, y):
+        return (0 < x - self.layout.x < self.layout.width and
+                0 < y - self.layout.y < self.layout.height)
+        
