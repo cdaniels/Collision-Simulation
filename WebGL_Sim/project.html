@@ -1,0 +1,151 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Collision Simulation</title>
+
+<link href="project.css" rel="stylesheet" type="text/css">
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script type="text/javascript" src="glMatrix-0.9.5.min.js"></script>
+<script type="text/javascript" src="webgl-utils.js"></script>
+<script id="shader-fs" type="x-shader/x-fragment">
+  precision mediump float;
+  
+  //varying vec4 vColor;
+  varying vec2 vTextureCoord;
+  varying vec3 vLightWeighting;
+  
+  uniform float uAlpha;
+  
+  uniform sampler2D uSampler;
+
+  void main(void) {
+	vec4 textureColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+	//gl_FragColor = vColor;
+	//gl_FragColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+	gl_FragColor = vec4(textureColor.rgb * vLightWeighting, textureColor.a * uAlpha);
+  }
+</script>
+
+<script id="shader-vs" type="x-shader/x-vertex">
+  attribute vec3 aVertexPosition;
+  attribute vec3 aVertexNormal;
+  attribute vec2 aTextureCoord;
+
+  uniform mat4 uMVMatrix;//modelview matrix
+  uniform mat4 uPMatrix;//perspective matrix
+  uniform mat3 uNMatrix;//normal matrix
+  
+  //lighting vectors
+  uniform vec3 uAmbientColor;
+
+  uniform vec3 uLightingDirection;
+  uniform vec3 uDirectionalColor;
+
+  uniform bool uUseLighting;
+  
+  //other vectors
+  //varying vec4 vColor;
+  varying vec2 vTextureCoord;
+  varying vec3 vLightWeighting;
+
+  void main(void) {
+    gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+	//vColor = aVertexColor;
+	vTextureCoord = aTextureCoord;
+	
+	if (!uUseLighting) {
+      vLightWeighting = vec3(1.0, 1.0, 1.0);
+    } else {
+      vec3 transformedNormal = uNMatrix * aVertexNormal;
+      float directionalLightWeighting = max(dot(transformedNormal, uLightingDirection), 0.0);
+      vLightWeighting = uAmbientColor + uDirectionalColor * directionalLightWeighting;
+    }
+  }
+</script>
+<script type="text/javascript" src="buffers.js"></script>
+<script type="text/javascript" src="shaders.js"></script>
+<script type="text/javascript" src="textures.js"></script>
+<script type="text/javascript" src="input.js"></script>
+<script type="text/javascript" src="objects.js"></script>
+<script type="text/javascript" src="project.js"></script>
+
+</head>
+
+<body onload="webGLStart();">
+	<header>
+    	<h1>Collision Sim</h1>
+ 	</header>
+    <div id="content">
+    	<canvas id="mycanvas" style="border: none;" width="500" height="300"></canvas>
+		<canvas id="plot_canvas" style="border: none; float:right;" width="200" height="300"></canvas>
+        <form name="settings" action="" method="get">
+        	Ball Number: <span id=ball_number>50.0</span><input type="text" name="ball_number"><br/>
+            Ball Radius: <span id=ball_radius>1</span><input type="text" name="ball_radius"><br/>
+			Ball Speed: <span id=ball_speed>0.2</span><input type="text" name="ball_speed"><br/>
+			Box Length: <span id=box_length>10</span><input type="text" name="box_length"><br/>
+			<input type="checkbox" id="debug" checked  "/> Debug<br/>
+            <input type="button" value="Submit" onClick="inputSettings(this.form)">
+        </form>
+	
+		<br />
+		
+		
+		<input type="checkbox" id="blending" checked /> Use blending<br/>
+		Alpha level <input type="text" id="alpha" value="0.5" /><br/>
+		
+		<input type="checkbox" id="lighting" checked /> Use lighting<br/>
+		(Use cursor keys to spin the box and <code>Page Up</code>/<code>Page Down</code> to zoom out/in)
+
+		<br/>
+		<h2>Directional light:</h2>
+
+		<table style="border: 0; padding: 10px;">
+			<tr>
+				<td><b>Direction:</b>
+				<td>X: <input type="text" id="lightDirectionX" value="-0.25" />
+				<td>Y: <input type="text" id="lightDirectionY" value="-0.25" />
+				<td>Z: <input type="text" id="lightDirectionZ" value="1.0" />
+			</tr>
+			<tr>
+				<td><b>Colour:</b>
+				<td>R: <input type="text" id="directionalR" value="0.8" />
+				<td>G: <input type="text" id="directionalG" value="0.8" />
+				<td>B: <input type="text" id="directionalB" value="0.8" />
+			</tr>
+		</table>
+
+		<h2>Ambient light:</h2>
+		<table style="border: 0; padding: 10px;">
+			<tr>
+				<td><b>Colour:</b>
+				<td>R: <input type="text" id="ambientR" value="0.2" />
+				<td>G: <input type="text" id="ambientG" value="0.2" />
+				<td>B: <input type="text" id="ambientB" value="0.2" />
+			</tr>
+		</table>
+
+    </div>
+	<footer>
+    	<p>copyright 2012 all rights reserved</p>
+    </footer>
+</body>
+<script>
+function checkRefresh(value)
+{
+	document.settings.submit();
+}
+function inputSettings(form){
+	$("#ball_number").html(form.ball_number.value);
+	$("#ball_radius").html(form.ball_radius.value);
+	$("#ball_speed").html(form.ball_speed.value);
+	$("#box_length").html(form.box_length.value);
+	console.log("sucess!");
+	posV = [];
+	velV = [];
+	webGLStart();
+	//window.location.reload();
+	//diameter = form.radius.value*2;
+	//friction = form.friction.value;
+}</script>
+</html>

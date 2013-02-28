@@ -42,8 +42,8 @@ class World(pl.window.Window):
         self.height = 480
         self.batch = pl.graphics.Batch()
         self.boxSize = 2.0
-        self.ballNumber = 100 # initial parameters
-        self.ballSize = 0.3
+        self.ballNumber = 50 # initial parameters
+        self.ballSize = 0.1
         self.collisionNumber = 0
 
         #-----------------------------------------#
