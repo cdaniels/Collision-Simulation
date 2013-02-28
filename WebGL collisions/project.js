@@ -55,16 +55,12 @@ var tilt = 90;
 var spin = 0;
 
 
-var rPyramid = 0; //rotation variable for pyramid
-
 // rotation variables for cube
 var xRot = 0;
 var xSpeed = 0;
 
 var yRot = 0;
 var ySpeed = 0;
-
-//var z = -5.0;
 
 var filter = 0;
 
@@ -221,19 +217,12 @@ function animate() {
 	var timeNow = new Date().getTime();
 	if (lastTime != 0) {
 		var elapsed = timeNow - lastTime;
-		
-		/*for (var i in stars) {
-			stars[i].animate(elapsed);
-		}*/
 
-		rPyramid += (90 * elapsed) / 1000.0;
+		// variables for arrow rotation of scene
 		xRot += (xSpeed * elapsed) / 1000.0;
 		yRot += (ySpeed * elapsed) / 1000.0;
-		//zRot -= (75 * elapsed) / 1000.0;
 		
-		//for(var i=0;i<ball_num;i++){
-			//posV[i] += velV[i];
-		//}
+		drawScene();
 	}
 	lastTime = timeNow;
 }
@@ -241,7 +230,6 @@ function animate() {
 function tick() {
 	requestAnimFrame(tick);
 	handleKeys();
-	drawScene();
 	animate();
 }
 

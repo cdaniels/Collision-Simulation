@@ -1,13 +1,11 @@
 
 //temporary globals
-var box_length = 10.0;
+//var box_length = 10.0;
 //var ball_radius = 2;
 
 
 /***************** buffers *****************/
 
-var pyramidVertexPositionBuffer;
-var pyramidVertexColorBuffer;
 var cubeVertexPositionBuffer;
 //var cubeVertexColorBuffer;
 var cubeVertexTextureCoordBuffer;
@@ -28,7 +26,8 @@ function initBuffers() {
 	var latitudeBands = 30;
 	var longitudeBands = 30;
 	//var radius = ball_radius;
-	var radius =  $("#ball_radius").html();
+	var radius =  parseFloat($("#ball_radius").html());
+	var box_length = parseFloat($("#box_length").html());
 
 	var vertexPositionData = [];
     var normalData = [];
@@ -97,59 +96,6 @@ function initBuffers() {
 	moonVertexIndexBuffer.itemSize = 1;
 	moonVertexIndexBuffer.numItems = indexData.length;
 
-
-	/*//pyramid buffers
-	
-	//position
-	pyramidVertexPositionBuffer = gl.createBuffer();
-	gl.bindBuffer(gl.ARRAY_BUFFER, pyramidVertexPositionBuffer);
-	var vertices = [
-        // Front face
-         0.0,  1.0,  0.0,
-        -1.0, -1.0,  1.0,
-         1.0, -1.0,  1.0,
-        // Right face
-         0.0,  1.0,  0.0,
-         1.0, -1.0,  1.0,
-         1.0, -1.0, -1.0,
-        // Back face
-         0.0,  1.0,  0.0,
-         1.0, -1.0, -1.0,
-        -1.0, -1.0, -1.0,
-        // Left face
-         0.0,  1.0,  0.0,
-        -1.0, -1.0, -1.0,
-        -1.0, -1.0,  1.0
-    ];
-	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-	pyramidVertexPositionBuffer.itemSize = 3;
-	pyramidVertexPositionBuffer.numItems = 12;
-	
-	//color
-	pyramidVertexColorBuffer = gl.createBuffer();
-	gl.bindBuffer(gl.ARRAY_BUFFER, pyramidVertexColorBuffer);
-	var colors = [
-        // Front face
-        1.0, 0.0, 0.0, 1.0,
-        0.0, 1.0, 0.0, 1.0,
-        0.0, 0.0, 1.0, 1.0,
-        // Right face
-        1.0, 0.0, 0.0, 1.0,
-        0.0, 0.0, 1.0, 1.0,
-        0.0, 1.0, 0.0, 1.0,
-        // Back face
-        1.0, 0.0, 0.0, 1.0,
-        0.0, 1.0, 0.0, 1.0,
-        0.0, 0.0, 1.0, 1.0,
-        // Left face
-        1.0, 0.0, 0.0, 1.0,
-        0.0, 0.0, 1.0, 1.0,
-        0.0, 1.0, 0.0, 1.0
-    ];
-	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
-	pyramidVertexColorBuffer.itemSize = 4;
-	pyramidVertexColorBuffer.numItems = 3;
-	*/
 	
 	//cube buffers
 	var r = box_length; //cube side length
@@ -197,28 +143,6 @@ function initBuffers() {
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
 	cubeVertexPositionBuffer.itemSize = 3;
 	cubeVertexPositionBuffer.numItems = 24;
-	
-	//color
-	/**cubeVertexColorBuffer = gl.createBuffer();
-	gl.bindBuffer(gl.ARRAY_BUFFER, cubeVertexColorBuffer);
-	colors = [
-      [1.0, 0.0, 0.0, 1.0],     // Front face
-      [1.0, 1.0, 0.0, 1.0],     // Back face
-      [0.0, 1.0, 0.0, 1.0],     // Top face
-      [1.0, 0.5, 0.5, 1.0],     // Bottom face
-      [1.0, 0.0, 1.0, 1.0],     // Right face
-      [0.0, 0.0, 1.0, 1.0],     // Left face
-    ];
-	var unpackedColors = [];
-	for (var i in colors) {
-		var color = colors[i];
-		for (var j=0; j < 4; j++) {
-		  unpackedColors = unpackedColors.concat(color);
-		}
-	}
-	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(unpackedColors), gl.STATIC_DRAW);
-	cubeVertexColorBuffer.itemSize = 4;
-	cubeVertexColorBuffer.numItems = 24;**/
 	
 	//normals
 	cubeVertexNormalBuffer = gl.createBuffer();

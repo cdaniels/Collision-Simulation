@@ -17,10 +17,10 @@ function getRandomArbitary (min, max) {
 }
 
 function initWorldObjects() {
-	var ball_num =  $("#ball_number").html();
-	var bound = $("#box_length").html();
+	var ball_num =  parseInt($("#ball_number").html());
+	var bound = parseFloat($("#box_length").html());
 	var pRange = bound;
-	var vRange = $("#ball_speed").html();
+	var vRange = parseFloat($("#ball_speed").html());
 	console.log("box_length is: " + bound);
 	console.log("pRange is: " + pRange);
 	console.log("vRange is: " + vRange);
@@ -56,11 +56,11 @@ function processCollisions(index){
 	iVel = vec3.clone(velV[i]);
 	
 	// collision detection
-	var bound = $("#box_length").html();
+	var bound = parseFloat($("#box_length").html());
 	var pRange = bound;
-	var radius =  $("#ball_radius").html();
+	var radius =  parseFloat($("#ball_radius").html());
 	//console.log("radius is: " + radius);
-	var ball_num =  $("#ball_number").html();
+	var ball_num =  parseInt($("#ball_number").html());
 	//console.log("radius is: " + radius);
 	//console.log("box_length is: " + bound);
 	//console.log(posV[i].e(1));
