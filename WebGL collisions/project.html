@@ -7,9 +7,7 @@
 <link href="project.css" rel="stylesheet" type="text/css">
 <script src="http://code.jquery.com/jquery-latest.js"></script>
 <script type="text/javascript" src="glMatrix-0.9.5.min.js"></script>
-<script type="text/javascript" src="mjs.js"></script>
 <script type="text/javascript" src="webgl-utils.js"></script>
-<script src="http://www.html5canvastutorials.com/libraries/Three.js"></script>
 <script id="shader-fs" type="x-shader/x-fragment">
   precision mediump float;
   
@@ -85,6 +83,7 @@
         	Ball Number: <span id=ball_number>50.0</span><input type="text" name="ball_number"><br/>
             Ball Radius: <span id=ball_radius>1</span><input type="text" name="ball_radius"><br/>
 			Ball Speed: <span id=ball_speed>0.2</span><input type="text" name="ball_speed"><br/>
+			Box Length: <span id=box_length>10</span><input type="text" name="box_length"><br/>
 			<input type="checkbox" id="debug" checked  "/> Debug<br/>
             <input type="button" value="Submit" onClick="inputSettings(this.form)">
         </form>
@@ -140,6 +139,7 @@ function inputSettings(form){
 	$("#ball_number").html(form.ball_number.value);
 	$("#ball_radius").html(form.ball_radius.value);
 	$("#ball_speed").html(form.ball_speed.value);
+	$("#box_length").html(form.box_length.value);
 	console.log("sucess!");
 	posV = [];
 	velV = [];

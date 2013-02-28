@@ -16,26 +16,24 @@ function getRandomArbitary (min, max) {
     return Math.random() * (max - min) + min;
 }
 
-function initWorldObjects(particle_num) {
+function initWorldObjects() {
 	var ball_num =  $("#ball_number").html();
-	//var ball_num = particle_num;
-
-	//var ball_num = 20;
-	var pRange = 4.0;
-	//var vRange = 0.5;
-	//var speed = 0.2;
-	//var speed =  $("#ball_speed").html();
+	var bound = $("#box_length").html();
+	var pRange = bound;
 	var vRange = $("#ball_speed").html();
-	console.log(vRange);
+	console.log("box_length is: " + bound);
+	console.log("pRange is: " + pRange);
+	console.log("vRange is: " + vRange);
 	if(document.getElementById("debug").checked){
 		// special debug mode for testing collision between two balls
 		ball_num = 2;
+		$("#ball_number").html(ball_num);
 		var V1 = vec3.fromValues(0,0,0);
 		var V2 = vec3.fromValues(0,0,0);
 		posV.push(V1);
 		velV.push(V2);
-		var V1 = vec3.fromValues(1,1,0);
-		var V2 = vec3.fromValues(-0.2,0,0);
+		var V1 = vec3.fromValues(5.0,1.0,0.0);
+		var V2 = vec3.fromValues(-vRange,0,0);
 		posV.push(V1);
 		velV.push(V2);
 	}else{
@@ -46,123 +44,100 @@ function initWorldObjects(particle_num) {
 			velV.push(V2);
 		}
 	}
-	
-	
-	
-	/*var numStars = 50;
-
-	for (var i=0; i < numStars; i++) {
-	  stars.push(new Star((i / numStars) * 5.0, i / numStars));
-	}*/
 }
 
 function processCollisions(index){
-
 	i = index;
 	
 	//increment position by velocity vector
-	//posV[i] = V3.add(posV[i],velV[i]);
-	//var old_posV = posV[i];
-	//var new_posV = vec3.create();
 	vec3.add(posV[i],velV[i]);
-	//posV[i] = new_posV;
-	//posV[i][0] += velV[i][0];
-	//posV[i][1] += velV[i][1];
-	//posV[i][2] += velV[i][2];
+	
+	iPos = vec3.clone(posV[i]);
+	iVel = vec3.clone(velV[i]);
 	
 	// collision detection
-	var bound = box_length;
-	//var radius = ball_radius;
+	var bound = $("#box_length").html();
+	var pRange = bound;
 	var radius =  $("#ball_radius").html();
+	//console.log("radius is: " + radius);
 	var ball_num =  $("#ball_number").html();
-	//GLfloat radius = test_ball.getRadius();
+	//console.log("radius is: " + radius);
+	//console.log("box_length is: " + bound);
 	//console.log(posV[i].e(1));
-	if ((posV[i][0] - radius <= -bound)||(posV[i][0]  + radius >= bound)){
+	//if (((posV[i][0] - radius <= -bound)&&(velV[i][0]<=0))||((posV[i][0]  + radius >= bound)&&(velV[i][0]>=0))){
+	//	velV[i][0] *= -1;
+	//}if (((posV[i][1] - radius <= -bound)&&(velV[i][1]<=0))||((posV[i][1] + radius >= bound)&&(velV[i][1]>=0))){
+	//	velV[i][1] *= -1;
+	//}if (((posV[i][2] - radius <= -bound)&&(velV[i][2]<=0))||((posV[i][2] + radius >= bound)&&(velV[i][2]>=0))){
+	//	velV[i][2] *= -1;
+	//}
+	if (((iPos[0] - radius <= -bound)&&(iVel[0]<=0))||((iPos[0]  + radius >= bound)&&(iVel[0]>=0))){
 		velV[i][0] *= -1;
-	}if ((posV[i][1] - radius <= -bound)||(posV[i][1] + radius >= bound)){
+	}if (((iPos[1] - radius <= -bound)&&(iVel[1]<=0))||((iPos[1] + radius >= bound)&&(iVel[1]>=0))){
 		velV[i][1] *= -1;
-	}if ((posV[i][2] - radius <= -bound)||(posV[i][2] + radius >= bound)){
+	}if (((iPos[2] - radius <= -bound)&&(iVel[2]<=0))||((iPos[2] + radius >= bound)&&(iVel[2]>=0))){
 		velV[i][2] *= -1;
 	}
 	
+	
 	for (var j=0;j<ball_num;j++){
-			iPos = vec3.clone(posV[i]);
+			//iPos = vec3.clone(posV[i]);
 			jPos = vec3.clone(posV[j]);
-			iVel = vec3.clone(velV[i]);
+			//iVel = vec3.clone(velV[i]);
 			jVel = vec3.clone(velV[j]);
+			//iPos = posV[i];
+			//jPos = posV[j];
+			//iVel = velV[i];
+			//jVel = velV[j];
 			if(i!=j){
-				var seperation = vec3.create();
-				vec3.distance(seperation,iPos,jPos);
+				//var seperation = vec3.create();
+				//vec3.distance(seperation,iPos,jPos);
+				var seperation = vec3.distance(iPos,jPos);
+				//console.log("seperation is: " + seperation);
 				var displacement = vec3.create();
 				var netVelocity = vec3.create();
 				vec3.subtract(displacement,iPos,jPos);
 				vec3.subtract(netVelocity,iVel,jVel);
 				
+				// only collide balls headed toward one another
 				//if(vec3.dot(netVelocity,displacement)<0){
-					// get j mass
-					//GLfloat jMass;
-					//#collision vector
-					//glm::vec3 collisionV = pos_Vectors[i] - pos_Vectors[j];
-					//glm::vec3 ncollisionV = collisionV/glm::normalize(collisionV);
 					if (seperation <= 2 * radius){
-							//#collision vector
-							var collisionV = vec3.create();
-							vec3.subtract(collisionV,iPos,jPos);
-							//ncollisionV = collisionV.toUnitVector();
-							var ncollisionV = vec3.create();
-							vec3.normalize(ncollisionV,collisionV);
-				
+						//#collision vector
+						//console.log("Collision!");
+						/*var collisionV = vec3.create();
+						vec3.subtract(collisionV,iPos,jPos);
+						var ncollisionV = vec3.create();
+						vec3.normalize(ncollisionV,collisionV);
+			
+						iInit = vec3.dot(iVel,ncollisionV);
+						jInit = vec3.dot(jVel,ncollisionV);
+						
+						//#elastic collision
+						var iFin = jInit;
+						var jFin = iInit;
+						var iDiff = iFin - iInit;
+						var jDiff = jFin - jInit;
+						var iProj = vec3.create();
+						var jProj = vec3.create();
+						//glm::vec3 iProj = ncollisionV * iDiff ;
+						//glm::vec3 jProj = ncollisionV * jDiff;
+						vec3.multiply(iProj,ncollisionV,vec3.fromValues(iDiff,iDiff,iDiff));
+						vec3.multiply(jProj,ncollisionV,vec3.fromValues(jDiff,jDiff,jDiff));
+						var new_veli = vec3.create();
+						var new_velj = vec3.create();
+						//new_veli = vel_Vectors[i] + iProj;
+						//new_velj = vel_Vectors[j] + jProj;
+						vec3.add(new_veli,iVel,iProj);
+						vec3.add(new_velj,jVel,jProj);
+						velV[i] = new_veli;
+						velV[j] = new_velj;*/
 
-							//glm::vec3 ncollisionV = normalize(collisionV);
-							iInit = vec3.dot(iVel,ncollisionV);
-							jInit = vec3.dot(jVel,ncollisionV);
-
-							//set masses
-							//GLfloat iMass = mass_array[i];
-							//GLfloat jMass = mass_array[j];
-
-							//mass differences and sum
-							//GLfloat mDiffi = iMass - jMass;
-							//GLfloat mDiffj = jMass - iMass;
-							//GLfloat mSum = iMass + jMass;
-
-							///////////////////////////////////////
-							////////////momentum exchange//////////////////
-							//glm::vec3 new_veli = (vel_Vectors[i]*mDiffi + 2*jMass*vel_Vectors[j])/mSum;
-							//glm::vec3 new_velj = (vel_Vectors[j]*mDiffj + 2*iMass*vel_Vectors[i])/mSum;
-							new_veli = (velV[j]);
-							new_velj = (velV[i]);
-							velV[i] = new_veli;
-							velV[j] = new_velj;
-							
-							// without mass //
-							/*iFin = jInit
-							jFin = iInit
-							iDiff = iFin - iInit
-							jDiff = jFin - jInit
-							var iProj = vec3.create();
-							var jProj = vec3.create();
-							var new_veli = vec3.create();
-							var new_velj = vec3.create();
-							vec3.multiply(iProj,ncollisionV,iDiff)
-							vec3.multiply(jProj,ncollisionV,jDiff)
-							vec3.add(new_veli,velV[i],iProj)
-							vec3.add(new_velj,velV[j],jProj)
-							velV[i] = new_veli;
-							velV[j] = new_velj;*/
-
-							//wait(0.2);
-							//collision_count += 1;
-						//}
+						new_veli = (velV[j]);
+						new_velj = (velV[i]);
+						velV[i] = new_veli;
+						velV[j] = new_velj;
 					}
 				//}
-				//#apply forces
-				//GLfloat g_constant = .0000007;
-				//GLfloat g_factor = g_constant / (seperation * seperation) ;
-				//glm::vec3 attraction =  g_factor * ncollisionV;
-				//acc_Vectors[i] += -attraction;
-				//acc_Vectors[j] += attraction;
-				
 			}
 		}
 	

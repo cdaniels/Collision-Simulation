@@ -125,21 +125,16 @@ function drawScene() {
 		);
 	}
 	
+	//drawBox();
 	var ball_num =  $("#ball_number").html();
 	for(var i=0;i<ball_num;i++){
 		//var pos = [0.0,0.0,0.0];
 		drawSphere(posV[i]);
 		processCollisions(i);
 	}
-	
-	//stars
-	/*var twinkle = document.getElementById("twinkle").checked;
-	for (var i in stars) {
-		stars[i].draw(tilt, spin, twinkle);
-		spin += 0.1;
-    }*/
-	
 	drawBox();
+	
+	
 }
 
 function drawSphere(posV){
@@ -193,7 +188,6 @@ function drawBox(){
 		mat4.rotate(mvMatrix, degToRad(yRot), [0, 1, 0]);
 		mat4.multiply(mvMatrix, moonRotationMatrix);
 		
-		//mat4.rotate(mvMatrix, degToRad(zRot), [0, 0, 1]);
 		
 		//bind position buffer
 		gl.bindBuffer(gl.ARRAY_BUFFER, cubeVertexPositionBuffer);
@@ -253,13 +247,12 @@ function tick() {
 
 function webGLStart() {
 	var canvas = document.getElementById("mycanvas");
-	var ball_num =  $("#ball_number").html();
 	//console.log(ball_num);
 	initGL(canvas);
 	initShaders();
 	initBuffers();
 	initTexture();
-	initWorldObjects(ball_num);
+	initWorldObjects();
 
 	gl.clearColor(0.0, 0.0, 0.0, 1.0);
 	gl.enable(gl.DEPTH_TEST);
