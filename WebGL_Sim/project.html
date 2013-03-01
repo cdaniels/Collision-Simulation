@@ -86,6 +86,7 @@
             Ball Radius: <span id=ball_radius>1</span><input type="text" name="ball_radius"><br/>
 			Ball Speed: <span id=ball_speed>0.2</span><input type="text" name="ball_speed"><br/>
 			Box Length: <span id=box_length>10</span><input type="text" name="box_length"><br/>
+			Volume: <span id=box_volume></span><br/>
 			<input type="checkbox" id="debug" checked  "/> Debug<br/>
             <input type="button" value="Submit" onClick="inputSettings(this.form)">
         </form>
@@ -143,6 +144,7 @@ $( "#slider" ).slider({
 		step:0.1,
 		slide: function(event, ui) {
 			$("#box_length").text(ui.value);
+			$("#box_volume").html(Math.pow(parseFloat($("#box_length").html()),3));
 			initBuffers();
 		}
 	});
@@ -162,6 +164,7 @@ function inputSettings(form){
 	$("#ball_radius").html(form.ball_radius.value);
 	$("#ball_speed").html(form.ball_speed.value);
 	$("#box_length").html(form.box_length.value);
+	$("#box_volume").html(Math.pow(parseFloat($("#box_length").html()),3));
 	//console.log("sucess!");
 	posV = [];
 	velV = [];
