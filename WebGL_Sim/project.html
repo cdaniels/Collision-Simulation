@@ -5,7 +5,9 @@
 <title>Collision Simulation</title>
 
 <link href="project.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.1/themes/base/jquery-ui.css" />
 <script src="http://code.jquery.com/jquery-latest.js"></script>
+<script src="http://code.jquery.com/ui/1.10.1/jquery-ui.js"></script>
 <script type="text/javascript" src="glMatrix-0.9.5.min.js"></script>
 <script type="text/javascript" src="webgl-utils.js"></script>
 <script id="shader-fs" type="x-shader/x-fragment">
@@ -87,8 +89,8 @@
 			<input type="checkbox" id="debug" checked  "/> Debug<br/>
             <input type="button" value="Submit" onClick="inputSettings(this.form)">
         </form>
-	
 		<br />
+		<div id="slider"></div>
 		
 		
 		<input type="checkbox" id="blending" checked /> Use blending<br/>
@@ -131,16 +133,27 @@
     </footer>
 </body>
 <script>
+	
+/**dummy function for slider creation**/
+$(function() {
+$( "#slider" ).slider();
+});
+
+/**simple call to refresh the page**/
 function checkRefresh(value)
 {
 	document.settings.submit();
 }
+/**
+inputs imports system parameters on submit button
+press
+**/
 function inputSettings(form){
 	$("#ball_number").html(form.ball_number.value);
 	$("#ball_radius").html(form.ball_radius.value);
 	$("#ball_speed").html(form.ball_speed.value);
 	$("#box_length").html(form.box_length.value);
-	console.log("sucess!");
+	//console.log("sucess!");
 	posV = [];
 	velV = [];
 	webGLStart();
