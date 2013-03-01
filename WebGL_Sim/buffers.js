@@ -28,6 +28,7 @@ function initBuffers() {
 	//var radius = ball_radius;
 	var radius =  parseFloat($("#ball_radius").html());
 	var box_length = parseFloat($("#box_length").html());
+	//var box_length = $( ".selector" ).slider( "value" );
 
 	var vertexPositionData = [];
     var normalData = [];

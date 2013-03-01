@@ -19,6 +19,7 @@ function getRandomArbitary (min, max) {
 function initWorldObjects() {
 	var ball_num =  parseInt($("#ball_number").html());
 	var bound = parseFloat($("#box_length").html());
+	//var bound = $( ".selector" ).slider( "value" );
 	var pRange = bound;
 	var vRange = parseFloat($("#ball_speed").html());
 	console.log("box_length is: " + bound);
@@ -57,6 +58,7 @@ function processCollisions(index){
 	
 	// collision detection
 	var bound = parseFloat($("#box_length").html());
+	//var bound = $( ".selector" ).slider( "value" );
 	var pRange = bound;
 	var radius =  parseFloat($("#ball_radius").html());
 	//console.log("radius is: " + radius);
