@@ -29,18 +29,18 @@ function initWorldObjects() {
 		// special debug mode for testing collision between two balls
 		ball_num = 2;
 		$("#ball_number").html(ball_num);
-		var V1 = vec3.fromValues(0,0,0);
-		var V2 = vec3.fromValues(0,0,0);
+		var V1 = old_vec3().fromValues(0,0,0);
+		var V2 = old_vec3().fromValues(0,0,0);
 		posV.push(V1);
 		velV.push(V2);
-		var V1 = vec3.fromValues(5.0,1.0,0.0);
-		var V2 = vec3.fromValues(-vRange,0,0);
+		var V1 = old_vec3().fromValues(5.0,1.0,0.0);
+		var V2 = old_vec3().fromValues(-vRange,0,0);
 		posV.push(V1);
 		velV.push(V2);
 	}else{
 		for (var i=0; i < ball_num; i++){
-			var V1 = vec3.fromValues(getRandomArbitary(-pRange,pRange),getRandomArbitary(-pRange,pRange),getRandomArbitary(-pRange,pRange));
-			var V2 = vec3.fromValues(getRandomArbitary(-vRange,vRange),getRandomArbitary(-vRange,vRange),getRandomArbitary(-vRange,vRange));
+			var V1 = old_vec3().fromValues(getRandomArbitary(-pRange,pRange),getRandomArbitary(-pRange,pRange),getRandomArbitary(-pRange,pRange));
+			var V2 = old_vec3().fromValues(getRandomArbitary(-vRange,vRange),getRandomArbitary(-vRange,vRange),getRandomArbitary(-vRange,vRange));
 			posV.push(V1);
 			velV.push(V2);
 		}
@@ -51,10 +51,10 @@ function processCollisions(index){
 	i = index;
 	
 	//increment position by velocity vector
-	vec3.add(posV[i],velV[i]);
+	old_vec3().add(posV[i],velV[i]);
 	
-	iPos = vec3.clone(posV[i]);
-	iVel = vec3.clone(velV[i]);
+	iPos = old_vec3().clone(posV[i]);
+	iVel = old_vec3().clone(velV[i]);
 	
 	// collision detection
 	var bound = parseFloat($("#box_length").html());
@@ -84,9 +84,9 @@ function processCollisions(index){
 	
 	for (var j=0;j<ball_num;j++){
 			//iPos = vec3.clone(posV[i]);
-			jPos = vec3.clone(posV[j]);
+			jPos = old_vec3().clone(posV[j]);
 			//iVel = vec3.clone(velV[i]);
-			jVel = vec3.clone(velV[j]);
+			jVel = old_vec3().clone(velV[j]);
 			//iPos = posV[i];
 			//jPos = posV[j];
 			//iVel = velV[i];
@@ -94,12 +94,12 @@ function processCollisions(index){
 			if(i!=j){
 				//var seperation = vec3.create();
 				//vec3.distance(seperation,iPos,jPos);
-				var seperation = vec3.distance(iPos,jPos);
+				var seperation = old_vec3().distance(iPos,jPos);
 				//console.log("seperation is: " + seperation);
-				var displacement = vec3.create();
-				var netVelocity = vec3.create();
-				vec3.subtract(displacement,iPos,jPos);
-				vec3.subtract(netVelocity,iVel,jVel);
+				var displacement = old_vec3().create();
+				var netVelocity = old_vec3().create();
+				old_vec3().subtract(displacement,iPos,jPos);
+				old_vec3().subtract(netVelocity,iVel,jVel);
 				
 				// only collide balls headed toward one another
 				//if(vec3.dot(netVelocity,displacement)<0){

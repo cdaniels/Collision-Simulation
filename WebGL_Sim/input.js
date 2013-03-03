@@ -60,8 +60,8 @@ var currentlyPressedKeys = {};
   var lastMouseX = null;
   var lastMouseY = null;
 
-  var moonRotationMatrix = mat4.create();
-  mat4.identity(moonRotationMatrix);
+  var moonRotationMatrix = old_mat4().create();
+  old_mat4().identity(moonRotationMatrix);
   
   function handleMouseDown(event) {
     mouseDown = true;
@@ -81,14 +81,14 @@ var currentlyPressedKeys = {};
     var newY = event.clientY;
 
     var deltaX = newX - lastMouseX;
-    var newRotationMatrix = mat4.create();
-    mat4.identity(newRotationMatrix);
-    mat4.rotate(newRotationMatrix, degToRad(deltaX / 10), [0, 1, 0]);
+    var newRotationMatrix = old_mat4().create();
+    old_mat4().identity(newRotationMatrix);
+    old_mat4().rotate(newRotationMatrix, degToRad(deltaX / 10), [0, 1, 0]);
 
     var deltaY = newY - lastMouseY;
     //mat4.rotate(newRotationMatrix, degToRad(deltaY / 10), [1, 0, 0]);
 
-    mat4.multiply(newRotationMatrix, moonRotationMatrix, moonRotationMatrix);
+    old_mat4().multiply(newRotationMatrix, moonRotationMatrix, moonRotationMatrix);
 
     lastMouseX = newX
     lastMouseY = newY;
