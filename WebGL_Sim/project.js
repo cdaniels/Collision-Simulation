@@ -17,13 +17,13 @@ function initGL(canvas) {
 }
 
 /***************** matrices *****************/
-var mvMatrix = mat4.create();
+var mvMatrix = oldV().mat4.create();
 var mvMatrixStack = [];
-var pMatrix = mat4.create();
+var pMatrix = oldV().mat4.create();
 
 function mvPushMatrix() {
-    var copy = mat4.create();
-    mat4.set(mvMatrix, copy);
+    var copy = oldV().mat4.create();
+    oldV().mat4.set(mvMatrix, copy);
     mvMatrixStack.push(copy);
 }
 
@@ -39,8 +39,8 @@ function setMatrixUniforms() {
 	gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
 	
 	var normalMatrix = mat3.create();
-    mat4.toInverseMat3(mvMatrix, normalMatrix);
-    mat3.transpose(normalMatrix);
+    oldV().mat4.toInverseMat3(mvMatrix, normalMatrix);
+    oldV().mat3.transpose(normalMatrix);
     gl.uniformMatrix3fv(shaderProgram.nMatrixUniform, false, normalMatrix);
 }
 
@@ -74,9 +74,9 @@ function drawScene() {
 	
 	
 
-	mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
+	oldV().mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
 
-	mat4.identity(mvMatrix);
+	oldV().mat4.identity(mvMatrix);
 	//mat4.translate(mvMatrix, [0.0, 0.0, zoom]);
 	//mat4.multiply(mvMatrix, moonRotationMatrix);
 	//mat4.rotate(mvMatrix, degToRad(tilt), [1.0, 0.0, 0.0]);
@@ -110,8 +110,8 @@ function drawScene() {
 			parseFloat(document.getElementById("lightDirectionZ").value)
 		  ];
 		var adjustedLD = vec3.create();
-		vec3.normalize(lightingDirection, adjustedLD);
-		vec3.scale(adjustedLD, -1);
+		oldV().vec3.normalize(lightingDirection, adjustedLD);
+		oldV().vec3.scale(adjustedLD, -1);
 		gl.uniform3fv(shaderProgram.lightingDirectionUniform, adjustedLD);
 		gl.uniform3f(
 			shaderProgram.directionalColorUniform,
@@ -138,18 +138,18 @@ function drawSphere(posV){
 	mvPushMatrix();
 	gl.disable(gl.BLEND);
     gl.enable(gl.DEPTH_TEST);
-		mat4.identity(mvMatrix);
-		mat4.translate(mvMatrix, sceneCenter);
-		mat4.translate(mvMatrix, [0.0, 0.0, zoom]);
-		mat4.rotate(mvMatrix, degToRad(xRot), [1, 0, 0]);
-		mat4.rotate(mvMatrix, degToRad(yRot), [0, 1, 0]);
-		mat4.multiply(mvMatrix, moonRotationMatrix);
+		oldV().mat4.identity(mvMatrix);
+		oldV().mat4.translate(mvMatrix, sceneCenter);
+		oldV().mat4.translate(mvMatrix, [0.0, 0.0, zoom]);
+		oldV().mat4.rotate(mvMatrix, degToRad(xRot), [1, 0, 0]);
+		oldV().mat4.rotate(mvMatrix, degToRad(yRot), [0, 1, 0]);
+		oldV().mat4.multiply(mvMatrix, moonRotationMatrix);
 		
 		
 		//translate to specific position
 		//position =[posV.e(1),posV.e(2),posV.e(3)];
 		//position =[posV,posV.e(2),posV.e(3)];
-		mat4.translate(mvMatrix, posV);
+		oldV().mat4.translate(mvMatrix, posV);
 		
 		//set texture
 		gl.activeTexture(gl.TEXTURE0);
@@ -177,12 +177,12 @@ function drawSphere(posV){
 function drawBox(){
 	//cube
 	mvPushMatrix();
-		mat4.identity(mvMatrix);
-		mat4.translate(mvMatrix, sceneCenter);
-		mat4.translate(mvMatrix, [0.0, 0.0, zoom]);
-		mat4.rotate(mvMatrix, degToRad(xRot), [1, 0, 0]);
-		mat4.rotate(mvMatrix, degToRad(yRot), [0, 1, 0]);
-		mat4.multiply(mvMatrix, moonRotationMatrix);
+		oldV().mat4.identity(mvMatrix);
+		oldV().mat4.translate(mvMatrix, sceneCenter);
+		oldV().mat4.translate(mvMatrix, [0.0, 0.0, zoom]);
+		oldV().mat4.rotate(mvMatrix, degToRad(xRot), [1, 0, 0]);
+		oldV().mat4.rotate(mvMatrix, degToRad(yRot), [0, 1, 0]);
+		oldV().mat4.multiply(mvMatrix, moonRotationMatrix);
 		
 		
 		//bind position buffer
