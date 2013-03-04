@@ -78,7 +78,7 @@ function drawScene() {
 
 	old_mat4().identity(mvMatrix);
 	//mat4.translate(mvMatrix, [0.0, 0.0, zoom]);
-	//mat4.multiply(mvMatrix, moonRotationMatrix);
+	//mat4.multiply(mvMatrix, sphereRotationMatrix);
 	//mat4.rotate(mvMatrix, degToRad(tilt), [1.0, 0.0, 0.0]);
 	
 	
@@ -134,7 +134,7 @@ function drawScene() {
 }
 
 function drawSphere(posV){
-	//moon
+	//sphere
 	mvPushMatrix();
 	gl.disable(gl.BLEND);
     gl.enable(gl.DEPTH_TEST);
@@ -143,7 +143,7 @@ function drawSphere(posV){
 		old_mat4().translate(mvMatrix, [0.0, 0.0, zoom]);
 		old_mat4().rotate(mvMatrix, degToRad(xRot), [1, 0, 0]);
 		old_mat4().rotate(mvMatrix, degToRad(yRot), [0, 1, 0]);
-		old_mat4().multiply(mvMatrix, moonRotationMatrix);
+		old_mat4().multiply(mvMatrix, sphereRotationMatrix);
 		
 		
 		//translate to specific position
@@ -153,22 +153,22 @@ function drawSphere(posV){
 		
 		//set texture
 		gl.activeTexture(gl.TEXTURE0);
-		gl.bindTexture(gl.TEXTURE_2D, moonTexture);
+		gl.bindTexture(gl.TEXTURE_2D, ballTexture);
 		gl.uniform1i(shaderProgram.samplerUniform, 0.5);
 		gl.uniform1i(shaderProgram.alphaUniform, 1);
 
-		gl.bindBuffer(gl.ARRAY_BUFFER, moonVertexPositionBuffer);
-		gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, moonVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+		gl.bindBuffer(gl.ARRAY_BUFFER, sphereVertexPositionBuffer);
+		gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, sphereVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
-		gl.bindBuffer(gl.ARRAY_BUFFER, moonVertexTextureCoordBuffer);
-		gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, moonVertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
+		gl.bindBuffer(gl.ARRAY_BUFFER, sphereVertexTextureCoordBuffer);
+		gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, sphereVertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
-		gl.bindBuffer(gl.ARRAY_BUFFER, moonVertexNormalBuffer);
-		gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, moonVertexNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);
+		gl.bindBuffer(gl.ARRAY_BUFFER, sphereVertexNormalBuffer);
+		gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, sphereVertexNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
-		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, moonVertexIndexBuffer);
+		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, sphereVertexIndexBuffer);
 		setMatrixUniforms();
-		gl.drawElements(gl.TRIANGLES, moonVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+		gl.drawElements(gl.TRIANGLES, sphereVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
 	gl.disable(gl.DEPTH_TEST);
 	gl.enable(gl.BLEND);    
 	mvPopMatrix();
@@ -182,7 +182,7 @@ function drawBox(){
 		old_mat4().translate(mvMatrix, [0.0, 0.0, zoom]);
 		old_mat4().rotate(mvMatrix, degToRad(xRot), [1, 0, 0]);
 		old_mat4().rotate(mvMatrix, degToRad(yRot), [0, 1, 0]);
-		old_mat4().multiply(mvMatrix, moonRotationMatrix);
+		old_mat4().multiply(mvMatrix, sphereRotationMatrix);
 		
 		
 		//bind position buffer
@@ -200,7 +200,7 @@ function drawBox(){
 		//gl.bindTexture(gl.TEXTURE_2D, neheTexture);
 		//gl.bindTexture(gl.TEXTURE_2D, crateTextures[filter]);//for switching textures
 		//gl.bindTexture(gl.TEXTURE_2D, crateTexture);//for single texture
-		gl.bindTexture(gl.TEXTURE_2D, glassTexture);//for stained glass
+		gl.bindTexture(gl.TEXTURE_2D, boxTexture);//for stained glass
 		gl.uniform1i(shaderProgram.samplerUniform, 0);
 		
 		
@@ -240,7 +240,7 @@ function webGLStart() {
 	initShaders();
 	initBuffers();
 	initTexture();
-	initWorldObjects();
+	initWorld();
 
 	gl.clearColor(0.0, 0.0, 0.0, 1.0);
 	gl.enable(gl.DEPTH_TEST);

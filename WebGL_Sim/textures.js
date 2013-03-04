@@ -1,28 +1,28 @@
 
-var glassTexture;
-var moonTexture;
+var boxTexture;
+var ballTexture;
 
 
 function initTexture() {
 	
-	//moon texture
-	moonTexture = gl.createTexture();
-	moonTexture.image = new Image();
-	moonTexture.image.onload = function () {
-		handleLoadedTexture(moonTexture)
+	//sphere texture
+	ballTexture = gl.createTexture();
+	ballTexture.image = new Image();
+	ballTexture.image.onload = function () {
+		handleLoadedTexture(ballTexture)
 	}
 
-	moonTexture.image.src = "moon.gif";
+	ballTexture.image.src = "moon.gif";
 	
 	
 	//box texture
-	glassTexture = gl.createTexture();
-	glassTexture.image = new Image();
-	glassTexture.image.onload = function () {
-		handleLoadedTexture(glassTexture)
+	boxTexture = gl.createTexture();
+	boxTexture.image = new Image();
+	boxTexture.image.onload = function () {
+		handleLoadedTexture(boxTexture)
 	}
 
-	glassTexture.image.src = "grid.gif";
+	boxTexture.image.src = "grid.gif";
 }
   
 function handleLoadedTexture(texture) {

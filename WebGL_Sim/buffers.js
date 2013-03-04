@@ -15,11 +15,11 @@ var cubeVertexIndexBuffer;
 var starVertexPositionBuffer;
 var starVertexTextureCoordBuffer;
 
-//moon buffers
-var moonVertexPositionBuffer;
-var moonVertexNormalBuffer;
-var moonVertexTextureCoordBuffer;
-var moonVertexIndexBuffer;
+//sphere buffers
+var sphereVertexPositionBuffer;
+var sphereVertexNormalBuffer;
+var sphereVertexTextureCoordBuffer;
+var sphereVertexIndexBuffer;
 
 function initBuffers() {
 	//sphere buffers
@@ -73,29 +73,29 @@ function initBuffers() {
         indexData.push(first + 1);
       }
     }
-	moonVertexNormalBuffer = gl.createBuffer();
-	gl.bindBuffer(gl.ARRAY_BUFFER, moonVertexNormalBuffer);
+	sphereVertexNormalBuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, sphereVertexNormalBuffer);
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normalData), gl.STATIC_DRAW);
-	moonVertexNormalBuffer.itemSize = 3;
-	moonVertexNormalBuffer.numItems = normalData.length / 3;
+	sphereVertexNormalBuffer.itemSize = 3;
+	sphereVertexNormalBuffer.numItems = normalData.length / 3;
 
-	moonVertexTextureCoordBuffer = gl.createBuffer();
-	gl.bindBuffer(gl.ARRAY_BUFFER, moonVertexTextureCoordBuffer);
+	sphereVertexTextureCoordBuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, sphereVertexTextureCoordBuffer);
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoordData), gl.STATIC_DRAW);
-	moonVertexTextureCoordBuffer.itemSize = 2;
-	moonVertexTextureCoordBuffer.numItems = textureCoordData.length / 2;
+	sphereVertexTextureCoordBuffer.itemSize = 2;
+	sphereVertexTextureCoordBuffer.numItems = textureCoordData.length / 2;
 
-	moonVertexPositionBuffer = gl.createBuffer();
-	gl.bindBuffer(gl.ARRAY_BUFFER, moonVertexPositionBuffer);
+	sphereVertexPositionBuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, sphereVertexPositionBuffer);
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexPositionData), gl.STATIC_DRAW);
-	moonVertexPositionBuffer.itemSize = 3;
-	moonVertexPositionBuffer.numItems = vertexPositionData.length / 3;
+	sphereVertexPositionBuffer.itemSize = 3;
+	sphereVertexPositionBuffer.numItems = vertexPositionData.length / 3;
 
-	moonVertexIndexBuffer = gl.createBuffer();
-	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, moonVertexIndexBuffer);
+	sphereVertexIndexBuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, sphereVertexIndexBuffer);
 	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indexData), gl.STATIC_DRAW);
-	moonVertexIndexBuffer.itemSize = 1;
-	moonVertexIndexBuffer.numItems = indexData.length;
+	sphereVertexIndexBuffer.itemSize = 1;
+	sphereVertexIndexBuffer.numItems = indexData.length;
 
 	
 	//cube buffers
