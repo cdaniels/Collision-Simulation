@@ -1,3 +1,5 @@
+
+
 /**
  * @fileoverview gl-matrix - High performance matrix and vector operations
  * @author Brandon Jones
@@ -121,6 +123,8 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
+
+var new_vec2 = function(){ 
 /**
  * @class 2 Dimensional Vector
  * @name vec2
@@ -583,6 +587,9 @@ if(typeof(exports) !== 'undefined') {
     exports.vec2 = vec2;
 }
 ;
+return vec2;}; 
+
+
 /* Copyright (c) 2013, Brandon Jones, Colin MacKenzie IV. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
@@ -605,6 +612,7 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
+var new_vec3 = function(){
 /**
  * @class 3 Dimensional Vector
  * @name vec3
@@ -1067,6 +1075,9 @@ if(typeof(exports) !== 'undefined') {
     exports.vec3 = vec3;
 }
 ;
+return vec3;}; 
+
+
 /* Copyright (c) 2013, Brandon Jones, Colin MacKenzie IV. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
@@ -1089,6 +1100,8 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
+
+var new_vec4 = function(){
 /**
  * @class 4 Dimensional Vector
  * @name vec4
@@ -1555,6 +1568,9 @@ if(typeof(exports) !== 'undefined') {
     exports.vec4 = vec4;
 }
 ;
+return vec4;}; 
+
+
 /* Copyright (c) 2013, Brandon Jones, Colin MacKenzie IV. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
@@ -1577,10 +1593,15 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
+
+
+var new_mat2 = function(){ 
 /**
  * @class 2x2 Matrix
  * @name mat2
  */
+
+
 
 var mat2 = {};
 
@@ -1794,6 +1815,10 @@ if(typeof(exports) !== 'undefined') {
     exports.mat2 = mat2;
 }
 ;
+return mat2;}; 
+
+
+
 /* Copyright (c) 2013, Brandon Jones, Colin MacKenzie IV. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
@@ -1816,6 +1841,8 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
+
+var new_mat2d = function(){ 
 /**
  * @class 2x3 Matrix
  * @name mat2d
@@ -2049,6 +2076,8 @@ if(typeof(exports) !== 'undefined') {
     exports.mat2d = mat2d;
 }
 ;
+return mat2d;};
+
 /* Copyright (c) 2013, Brandon Jones, Colin MacKenzie IV. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
@@ -2071,6 +2100,7 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
+var new_mat3 = function(){ 
 /**
  * @class 3x3 Matrix
  * @name mat3
@@ -2480,6 +2510,9 @@ if(typeof(exports) !== 'undefined') {
     exports.mat3 = mat3;
 }
 ;
+return mat3;}; 
+
+
 /* Copyright (c) 2013, Brandon Jones, Colin MacKenzie IV. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
@@ -2502,6 +2535,8 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
+
+var new_mat4 = function(){ 
 /**
  * @class 4x4 Matrix
  * @name mat4
@@ -3084,6 +3119,8 @@ mat4.rotateZ = function (out, a, rad) {
     return out;
 };
 
+
+
 /**
  * Creates a matrix from a quaternion rotation and vector translation
  * This is equivalent to (but much faster than):
@@ -3389,6 +3426,9 @@ if(typeof(exports) !== 'undefined') {
     exports.mat4 = mat4;
 }
 ;
+return mat4;};
+
+
 /* Copyright (c) 2013, Brandon Jones, Colin MacKenzie IV. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
@@ -3411,6 +3451,8 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
+
+var new_quat = function(){ 
 /**
  * @class Quaternion
  * @name quat
@@ -3848,6 +3890,7 @@ if(typeof(exports) !== 'undefined') {
     exports.quat = quat;
 }
 ;
+return quat;}; 
 
 
 
@@ -3863,3 +3906,4 @@ if(typeof(exports) !== 'undefined') {
 
   })(shim.exports);
 })();
+
