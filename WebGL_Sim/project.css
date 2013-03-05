@@ -20,14 +20,52 @@ canvas{
 }
 
 #content{
+	display:block;
 	background-color:#99CCCC;
-	height:900px;
+	height:auto;
+	width:850px;
+	margin: auto;
+}
+
+#display_box{
+	display:block;
+	background:tan;
+	border:thin solid black;
+	height: 300px;
+	width:800px;
+	margin:auto;
+}
+
+#settings_box{
+	display:block;
+	width: 400px;
+	margin:30px auto;
+	background:aqua;
+	border:thin solid black;
+	text-align:center;
 }
 
 #slider{
 	width:300px;
 	margin: auto;
 	display:block;
+}
+
+#mycanvas{
+	border: none;
+	float:left;
+}
+
+#graph_box{
+	height:300px;
+	width: 400px;
+	float:left;
+}
+
+.graph{
+	width:400px;
+	height:150px;
+	/*float:right;*/
 }
 
 
