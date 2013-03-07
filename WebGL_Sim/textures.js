@@ -12,7 +12,8 @@ function initTexture() {
 		handleLoadedTexture(ballTexture)
 	}
 
-	ballTexture.image.src = "moon.gif";
+	//ballTexture.image.src = "textures/moon.gif";
+	ballTexture.image.src = document.getElementById("moon_tex").src;
 	
 	
 	//box texture
@@ -22,7 +23,8 @@ function initTexture() {
 		handleLoadedTexture(boxTexture)
 	}
 
-	boxTexture.image.src = "grid.gif";
+	//boxTexture.image.src = "textures/grid.gif";
+	boxTexture.image.src = document.getElementById("grid_tex").src;
 }
   
 function handleLoadedTexture(texture) {

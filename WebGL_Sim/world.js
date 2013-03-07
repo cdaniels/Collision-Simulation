@@ -1,14 +1,7 @@
 
-//var ball_num = document.getElementById("ball_number").innerHTML();
-//var ball_num =  $("#ball_number").html();
-//var ball_num = 10;
 var posV = [];
 var velV = [];
 
-//var V1 = $V([3,4,5]);
-//var V2 = $V([9,-3,0]);
-//var V1 = vec3.create();
-//var V2 = vec3.create();
 /**
  * Returns a random number between min and max
  */
@@ -63,16 +56,7 @@ function processCollisions(index){
 	var radius =  parseFloat($("#ball_radius").html());
 	//console.log("radius is: " + radius);
 	var ball_num =  parseInt($("#ball_number").html());
-	//console.log("radius is: " + radius);
-	//console.log("box_length is: " + bound);
-	//console.log(posV[i].e(1));
-	//if (((posV[i][0] - radius <= -bound)&&(velV[i][0]<=0))||((posV[i][0]  + radius >= bound)&&(velV[i][0]>=0))){
-	//	velV[i][0] *= -1;
-	//}if (((posV[i][1] - radius <= -bound)&&(velV[i][1]<=0))||((posV[i][1] + radius >= bound)&&(velV[i][1]>=0))){
-	//	velV[i][1] *= -1;
-	//}if (((posV[i][2] - radius <= -bound)&&(velV[i][2]<=0))||((posV[i][2] + radius >= bound)&&(velV[i][2]>=0))){
-	//	velV[i][2] *= -1;
-	//}
+
 	if (((iPos[0] - radius <= -bound)&&(iVel[0]<=0))||((iPos[0]  + radius >= bound)&&(iVel[0]>=0))){
 		velV[i][0] *= -1;
 	}if (((iPos[1] - radius <= -bound)&&(iVel[1]<=0))||((iPos[1] + radius >= bound)&&(iVel[1]>=0))){
@@ -87,10 +71,7 @@ function processCollisions(index){
 			jPos = vec3.clone(posV[j]);
 			//iVel = vec3.clone(velV[i]);
 			jVel = vec3.clone(velV[j]);
-			//iPos = posV[i];
-			//jPos = posV[j];
-			//iVel = velV[i];
-			//jVel = velV[j];
+
 			if(i!=j){
 				//var seperation = vec3.create();
 				//vec3.distance(seperation,iPos,jPos);
@@ -133,11 +114,6 @@ function processCollisions(index){
 						vec3.add(new_velj,jVel,jProj);
 						velV[i] = new_veli;
 						velV[j] = new_velj;
-
-						/*new_veli = (velV[j]);
-						new_velj = (velV[i]);
-						velV[i] = new_veli;
-						velV[j] = new_velj;*/
 					}
 				}
 			}

@@ -68,6 +68,10 @@ canvas{
 	/*float:right;*/
 }
 
+.hidden{
+	display:none;
+}
+
 
 /**#mycanvas{
 	border: none; 
