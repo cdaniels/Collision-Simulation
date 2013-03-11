@@ -217,6 +217,7 @@ function animate() {
 	var timeNow = new Date().getTime();
 	if (lastTime != 0) {
 		var elapsed = timeNow - lastTime;
+		//console.log(elapsed);
 
 		// variables for arrow rotation of scene
 		xRot += (xSpeed * elapsed) / 1000.0;

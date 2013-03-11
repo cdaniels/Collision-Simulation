@@ -1,6 +1,9 @@
-
+// global values are used for carrying out important 
+// collision computations
 var posV = [];
 var velV = [];
+var impulse = 0;
+var startTime = new Date().getTime();
 
 /**
  * Returns a random number between min and max
@@ -42,6 +45,10 @@ function initWorld() {
 
 function processCollisions(index){
 	i = index;
+	var currTime = new Date().getTime() - startTime;
+	$("#run_time").html(Math.round(currTime/1000));
+	$("#box_pressure").html(Math.round(impulse*100000/currTime)/10);
+	//console.log(currTime/1000);
 	
 	//increment position by velocity vector
 	vec3.add(posV[i],posV[i],velV[i]);
@@ -54,15 +61,22 @@ function processCollisions(index){
 	//var bound = $( ".selector" ).slider( "value" );
 	var pRange = bound;
 	var radius =  parseFloat($("#ball_radius").html());
+	var mass = 1; // mass for each particle
 	//console.log("radius is: " + radius);
 	var ball_num =  parseInt($("#ball_number").html());
 
 	if (((iPos[0] - radius <= -bound)&&(iVel[0]<=0))||((iPos[0]  + radius >= bound)&&(iVel[0]>=0))){
-		velV[i][0] *= -1;
+		velV[i][0] *= -1; // reverse direction
+		impulse += 2*mass*Math.abs(velV[i][0]); // add change to total impulse
+		//console.log(impulse);
 	}if (((iPos[1] - radius <= -bound)&&(iVel[1]<=0))||((iPos[1] + radius >= bound)&&(iVel[1]>=0))){
 		velV[i][1] *= -1;
+		//console.log(impulse);
+		//impulse += 2*mass*Math.abs(velV[i][1]);
 	}if (((iPos[2] - radius <= -bound)&&(iVel[2]<=0))||((iPos[2] + radius >= bound)&&(iVel[2]>=0))){
 		velV[i][2] *= -1;
+		impulse += 2*mass*Math.abs(velV[i][2]);
+		//console.log(impulse);
 	}
 	
 	
