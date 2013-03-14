@@ -2,7 +2,7 @@
 // collision computations
 var posV = [];
 var velV = [];
-var impulse = 0;
+var impulse_total = 0;
 var startTime = new Date().getTime();
 
 /**
@@ -25,20 +25,16 @@ function initWorld() {
 		// special debug mode for testing collision between two balls
 		ball_num = 2;
 		$("#ball_number").html(ball_num);
-		var V1 = vec3.fromValues(0,0,0);
-		var V2 = vec3.fromValues(0,0,0);
-		posV.push(V1);
-		velV.push(V2);
-		var V1 = vec3.fromValues(5.0,1.0,0.0);
-		var V2 = vec3.fromValues(-vRange,0,0);
-		posV.push(V1);
-		velV.push(V2);
+		posV.push(vec3.fromValues(0,0,0));
+		velV.push(vec3.fromValues(0,0,0));
+		posV.push(vec3.fromValues(5.0,1.0,0.0));
+		velV.push(vec3.fromValues(-vRange,0,0));
 	}else{
 		for (var i=0; i < ball_num; i++){
-			var V1 = vec3.fromValues(getRandomArbitary(-pRange,pRange),getRandomArbitary(-pRange,pRange),getRandomArbitary(-pRange,pRange));
-			var V2 = vec3.fromValues(getRandomArbitary(-vRange,vRange),getRandomArbitary(-vRange,vRange),getRandomArbitary(-vRange,vRange));
-			posV.push(V1);
-			velV.push(V2);
+			var randPos = vec3.fromValues(getRandomArbitary(-pRange,pRange),getRandomArbitary(-pRange,pRange),getRandomArbitary(-pRange,pRange));
+			var randVel = vec3.fromValues(getRandomArbitary(-vRange,vRange),getRandomArbitary(-vRange,vRange),getRandomArbitary(-vRange,vRange));
+			posV.push(randPos);
+			velV.push(randVel);
 		}
 	}
 }
@@ -47,7 +43,8 @@ function processCollisions(index){
 	i = index;
 	var currTime = new Date().getTime() - startTime;
 	$("#run_time").html(Math.round(currTime/1000));
-	$("#box_pressure").html(Math.round(impulse*100000/currTime)/10);
+	//$("#box_pressure").html(Math.round(impulse_total));
+	$("#box_pressure").html(Math.round(impulse_total*100000/currTime)/10);
 	//console.log(currTime/1000);
 	
 	//increment position by velocity vector
@@ -67,15 +64,20 @@ function processCollisions(index){
 
 	if (((iPos[0] - radius <= -bound)&&(iVel[0]<=0))||((iPos[0]  + radius >= bound)&&(iVel[0]>=0))){
 		velV[i][0] *= -1; // reverse direction
-		impulse += 2*mass*Math.abs(velV[i][0]); // add change to total impulse
+		impulse_total += 2*mass*Math.abs(velV[i][0]); // add change to total impulse
+		setTimeout("impulse_total-=2*Math.abs(velV[i][0])",1000);
 		//console.log(impulse);
 	}if (((iPos[1] - radius <= -bound)&&(iVel[1]<=0))||((iPos[1] + radius >= bound)&&(iVel[1]>=0))){
 		velV[i][1] *= -1;
 		//console.log(impulse);
-		//impulse += 2*mass*Math.abs(velV[i][1]);
+		impulse_total += 2*mass*Math.abs(velV[i][1]);
+		setTimeout("impulse_total-=2*Math.abs(velV[i][1])",1000);
 	}if (((iPos[2] - radius <= -bound)&&(iVel[2]<=0))||((iPos[2] + radius >= bound)&&(iVel[2]>=0))){
 		velV[i][2] *= -1;
-		impulse += 2*mass*Math.abs(velV[i][2]);
+		var z_change = 2*mass*Math.abs(velV[i][2]);
+		impulse_total += z_change;
+		//setTimeout("decrement_impulse(z_change,10000)");
+		setTimeout("impulse_total-=2*Math.abs(velV[i][2])",1000);
 		//console.log(impulse);
 	}
 	
