@@ -2,8 +2,13 @@
 // collision computations
 var posV = [];
 var velV = [];
+
 var temp_array = [];
 var velRange_array = [];
+var tick_count = 10;
+var vRange = 1000 * parseFloat($("#ball_speed").html());
+var tick_range = vRange/tick_count;
+
 var impulse_total = 0;
 var startTime = new Date().getTime();
 
@@ -39,14 +44,22 @@ function initWorld() {
 			velV.push(randVel);
 		}
 	}
-}
-
-function sortVelocity(velocity){
-	//var vRange = 100 * parseFloat($("#ball_speed").html());
-	var tick_count = 20;
+	// create size of empty graph array
 	for(i=0;i<tick_count;i++){
 		temp_array.push(1);
 	}
+}
+
+function sortVelocity(velocity){
+	for(i=0;i<tick_count;i++){
+		var velMag = 1000* vec3.length(velocity);
+		//console.log(velMag);
+		//console.log(tick_range);
+		if(velMag < (i * tick_range)){
+			temp_array[i] += 1;
+		}
+	}
+	//console.log("sorted");
 }
 
 function processCollisions(index){
@@ -59,9 +72,6 @@ function processCollisions(index){
 	
 	//increment position by velocity vector
 	vec3.add(posV[i],posV[i],velV[i]);
-	
-	//add velocity to sort array
-	//sortVelocity(vec3.clone(velV[i])); //could be before too
 	
 	iPos = vec3.clone(posV[i]);
 	iVel = vec3.clone(velV[i]);
@@ -147,5 +157,4 @@ function processCollisions(index){
 			}
 		}
 	}
-	velRange_array = temp_array;
 }

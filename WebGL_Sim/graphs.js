@@ -21,7 +21,7 @@ $(function () {
         //get total number of balls for each range
         var data = [];
         for (var i = 0; i < totalPoints; ++i);
-            data.push([i, velRange_array[i]])
+            data.push([i, velRange_array[i]]);
         return data;
     }
 

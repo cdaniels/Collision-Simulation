@@ -123,11 +123,16 @@ function drawScene() {
 	
 	//drawBox();
 	var ball_num =  $("#ball_number").html();
+	console.log(temp_array);
+	temp_array=[];
 	for(var i=0;i<ball_num;i++){
 		//var pos = [0.0,0.0,0.0];
 		drawSphere(posV[i]);
 		processCollisions(i);
+		//add velocity to sort array
+		sortVelocity(vec3.clone(velV[i])); //could be before too
 	}
+	velRange_array = temp_array;
 	drawBox();
 	
 	
