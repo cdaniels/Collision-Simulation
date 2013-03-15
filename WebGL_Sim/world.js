@@ -2,6 +2,8 @@
 // collision computations
 var posV = [];
 var velV = [];
+var temp_array = [];
+var velRange_array = [];
 var impulse_total = 0;
 var startTime = new Date().getTime();
 
@@ -39,6 +41,14 @@ function initWorld() {
 	}
 }
 
+function sortVelocity(velocity){
+	//var vRange = 100 * parseFloat($("#ball_speed").html());
+	var tick_count = 20;
+	for(i=0;i<tick_count;i++){
+		temp_array.push(1);
+	}
+}
+
 function processCollisions(index){
 	i = index;
 	var currTime = new Date().getTime() - startTime;
@@ -49,6 +59,9 @@ function processCollisions(index){
 	
 	//increment position by velocity vector
 	vec3.add(posV[i],posV[i],velV[i]);
+	
+	//add velocity to sort array
+	//sortVelocity(vec3.clone(velV[i])); //could be before too
 	
 	iPos = vec3.clone(posV[i]);
 	iVel = vec3.clone(velV[i]);
@@ -83,56 +96,56 @@ function processCollisions(index){
 	
 	
 	for (var j=0;j<ball_num;j++){
-			//iPos = vec3.clone(posV[i]);
-			jPos = vec3.clone(posV[j]);
-			//iVel = vec3.clone(velV[i]);
-			jVel = vec3.clone(velV[j]);
+		//iPos = vec3.clone(posV[i]);
+		jPos = vec3.clone(posV[j]);
+		//iVel = vec3.clone(velV[i]);
+		jVel = vec3.clone(velV[j]);
 
-			if(i!=j){
-				//var seperation = vec3.create();
-				//vec3.distance(seperation,iPos,jPos);
-				var seperation = vec3.distance(iPos,jPos);
-				//console.log("seperation is: " + seperation);
-				var displacement = vec3.create();
-				var netVelocity = vec3.create();
-				vec3.subtract(displacement,iPos,jPos);
-				vec3.subtract(netVelocity,iVel,jVel);
-				
-				// only collide balls headed toward one another
-				if(vec3.dot(netVelocity,displacement)<0){
-					if (seperation <= 2 * radius){
-						//#collision vector
-						//console.log("Collision!");
-						var collisionV = vec3.create();
-						vec3.subtract(collisionV,iPos,jPos);
-						var ncollisionV = vec3.create();
-						vec3.normalize(ncollisionV,collisionV);
+		if(i!=j){
+			//var seperation = vec3.create();
+			//vec3.distance(seperation,iPos,jPos);
+			var seperation = vec3.distance(iPos,jPos);
+			//console.log("seperation is: " + seperation);
+			var displacement = vec3.create();
+			var netVelocity = vec3.create();
+			vec3.subtract(displacement,iPos,jPos);
+			vec3.subtract(netVelocity,iVel,jVel);
 			
-						iInit = vec3.dot(iVel,ncollisionV);
-						jInit = vec3.dot(jVel,ncollisionV);
-						
-						//#elastic collision
-						var iFin = jInit;
-						var jFin = iInit;
-						var iDiff = iFin - iInit;
-						var jDiff = jFin - jInit;
-						var iProj = vec3.create();
-						var jProj = vec3.create();
-						//glm::vec3 iProj = ncollisionV * iDiff ;
-						//glm::vec3 jProj = ncollisionV * jDiff;
-						vec3.multiply(iProj,ncollisionV,vec3.fromValues(iDiff,iDiff,iDiff));
-						vec3.multiply(jProj,ncollisionV,vec3.fromValues(jDiff,jDiff,jDiff));
-						var new_veli = vec3.create();
-						var new_velj = vec3.create();
-						//new_veli = vel_Vectors[i] + iProj;
-						//new_velj = vel_Vectors[j] + jProj;
-						vec3.add(new_veli,iVel,iProj);
-						vec3.add(new_velj,jVel,jProj);
-						velV[i] = new_veli;
-						velV[j] = new_velj;
-					}
+			// only collide balls headed toward one another
+			if(vec3.dot(netVelocity,displacement)<0){
+				if (seperation <= 2 * radius){
+					//#collision vector
+					//console.log("Collision!");
+					var collisionV = vec3.create();
+					vec3.subtract(collisionV,iPos,jPos);
+					var ncollisionV = vec3.create();
+					vec3.normalize(ncollisionV,collisionV);
+		
+					iInit = vec3.dot(iVel,ncollisionV);
+					jInit = vec3.dot(jVel,ncollisionV);
+					
+					//#elastic collision
+					var iFin = jInit;
+					var jFin = iInit;
+					var iDiff = iFin - iInit;
+					var jDiff = jFin - jInit;
+					var iProj = vec3.create();
+					var jProj = vec3.create();
+					//glm::vec3 iProj = ncollisionV * iDiff ;
+					//glm::vec3 jProj = ncollisionV * jDiff;
+					vec3.multiply(iProj,ncollisionV,vec3.fromValues(iDiff,iDiff,iDiff));
+					vec3.multiply(jProj,ncollisionV,vec3.fromValues(jDiff,jDiff,jDiff));
+					var new_veli = vec3.create();
+					var new_velj = vec3.create();
+					//new_veli = vel_Vectors[i] + iProj;
+					//new_velj = vel_Vectors[j] + jProj;
+					vec3.add(new_veli,iVel,iProj);
+					vec3.add(new_velj,jVel,jProj);
+					velV[i] = new_veli;
+					velV[j] = new_velj;
 				}
 			}
 		}
-	
+	}
+	velRange_array = temp_array;
 }

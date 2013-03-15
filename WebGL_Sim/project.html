@@ -180,14 +180,13 @@ function inputSettings(form){
 	$("#box_length").html(form.box_length.value);
 	$("#box_volume").html(Math.round(Math.pow(parseFloat($("#box_length").html()),3)));
 	//console.log("sucess!");
+	
+	//restart program
 	posV = [];
 	velV = [];
 	impulse_total = 0;
 	startTime = new Date().getTime();
-	
 	webGLStart();
 	//window.location.reload();
-	//diameter = form.radius.value*2;
-	//friction = form.friction.value;
 }</script>
 </html>
