@@ -16,12 +16,14 @@ $(function () {
     //load velocity data
     var vRange = 100 * parseFloat($("#ball_speed").html());
     //totalPoints = vRange;
-    totalPoints = 20;
+    totalPoints = tick_count;
     function getData() {
         //get total number of balls for each range
         var data = [];
+        //console.log(totalPoints);
         for (var i = 0; i < totalPoints; ++i);
-            data.push([i, velRange_array[i]]);
+            //data.push([i, velRange_array[i]]);
+            data.push([i, temp_array[i]]);
         return data;
     }
 

@@ -3,11 +3,11 @@
 var posV = [];
 var velV = [];
 
-var temp_array = [];
-var velRange_array = [];
 var tick_count = 10;
-var vRange = 1000 * parseFloat($("#ball_speed").html());
-var tick_range = vRange/tick_count;
+var temp_array = makeArrayOf(0,tick_count);
+var velRange_array = makeArrayOf(0,tick_count);
+
+
 
 var impulse_total = 0;
 var startTime = new Date().getTime();
@@ -17,6 +17,18 @@ var startTime = new Date().getTime();
  */
 function getRandomArbitary (min, max) {
     return Math.random() * (max - min) + min;
+}
+	
+/**
+ * makes an array of a certain length filled with a certain value
+ * copied from http://stackoverflow.com/questions/1295584/most-efficient-way-to-create-a-zero-filled-javascript-array
+ */
+function makeArrayOf(value, length) {
+  var arr = [], i = length;
+  while (i--) {
+    arr[i] = value;
+  }
+  return arr;
 }
 
 function initWorld() {
@@ -45,18 +57,23 @@ function initWorld() {
 		}
 	}
 	// create size of empty graph array
-	for(i=0;i<tick_count;i++){
-		temp_array.push(1);
-	}
+	//for(i=0;i<tick_count;i++){
+	//	temp_array.push(1);
+	//}
 }
 
 function sortVelocity(velocity){
+	var vRange = parseFloat($("#ball_speed").html());
+	var tick_range = vRange/tick_count;
+	//console.log(vRange);
+	//console.log(tick_range);
 	for(i=0;i<tick_count;i++){
-		var velMag = 1000* vec3.length(velocity);
+		var velMag = vec3.length(velocity);
 		//console.log(velMag);
-		//console.log(tick_range);
-		if(velMag < (i * tick_range)){
-			temp_array[i] += 1;
+		//console.log(i * tick_range);
+		if( (velMag > ((i) * tick_range))&&
+			(velMag < ((i+1) * tick_range))){
+				temp_array[i] += 1;
 		}
 	}
 	//console.log("sorted");
@@ -88,19 +105,19 @@ function processCollisions(index){
 	if (((iPos[0] - radius <= -bound)&&(iVel[0]<=0))||((iPos[0]  + radius >= bound)&&(iVel[0]>=0))){
 		velV[i][0] *= -1; // reverse direction
 		impulse_total += 2*mass*Math.abs(velV[i][0]); // add change to total impulse
-		setTimeout("impulse_total-=2*Math.abs(velV[i][0])",1000);
+		//setTimeout("impulse_total-=2*Math.abs(velV[i][0])",1000);
 		//console.log(impulse);
 	}if (((iPos[1] - radius <= -bound)&&(iVel[1]<=0))||((iPos[1] + radius >= bound)&&(iVel[1]>=0))){
 		velV[i][1] *= -1;
 		//console.log(impulse);
 		impulse_total += 2*mass*Math.abs(velV[i][1]);
-		setTimeout("impulse_total-=2*Math.abs(velV[i][1])",1000);
+		//setTimeout("impulse_total-=2*Math.abs(velV[i][1])",1000);
 	}if (((iPos[2] - radius <= -bound)&&(iVel[2]<=0))||((iPos[2] + radius >= bound)&&(iVel[2]>=0))){
 		velV[i][2] *= -1;
 		var z_change = 2*mass*Math.abs(velV[i][2]);
 		impulse_total += z_change;
 		//setTimeout("decrement_impulse(z_change,10000)");
-		setTimeout("impulse_total-=2*Math.abs(velV[i][2])",1000);
+		//setTimeout("impulse_total-=2*Math.abs(velV[i][2])",1000);
 		//console.log(impulse);
 	}
 	
