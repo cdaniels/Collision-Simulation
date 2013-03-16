@@ -67,7 +67,7 @@ function sortVelocity(velocity){
 	var tick_range = vRange/tick_count;
 	//console.log(vRange);
 	//console.log(tick_range);
-	for(i=0;i<tick_count;i++){
+	for(i=0;i<=tick_count;i++){
 		var velMag = vec3.length(velocity);
 		//console.log(velMag);
 		//console.log(i * tick_range);

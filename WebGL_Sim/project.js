@@ -123,7 +123,7 @@ function drawScene() {
 	
 	//drawBox();
 	var ball_num =  $("#ball_number").html();
-	console.log(temp_array);
+	//console.log(temp_array);
 	temp_array = makeArrayOf(0,tick_count);
 	
 	for(var i=0;i<ball_num;i++){

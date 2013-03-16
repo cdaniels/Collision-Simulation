@@ -1,17 +1,4 @@
 $(function () {
-    /*var d1 = [];
-    for (var i = 0; i < 14; i += 0.5)
-        d1.push([i, Math.sin(i)]);
-
-    var d2 = [[0, 3], [4, 8], [8, 5], [9, 13]];
-
-    // a null signifies separate line segments
-    var d3 = [[0, 12], [7, 12], null, [7, 2.5], [12, 2.5]];
-    
-    $.plot($("#graph_1"), [ d1, d2, d3 ]);
-    //$.plot($("#graph_2"), [ d1, d2, d3 ]);*/
-    // we use an inline data source in the example, usually data would
-    // be fetched from a server
     
     //load velocity data
     var vRange = 100 * parseFloat($("#ball_speed").html());
@@ -21,9 +8,10 @@ $(function () {
         //get total number of balls for each range
         var data = [];
         //console.log(totalPoints);
-        for (var i = 0; i < totalPoints; ++i);
+        for (var i = 1; i <= totalPoints; ++i){
             //data.push([i, velRange_array[i]]);
-            data.push([i, temp_array[i]]);
+            data.push([i, velRange_array[i]]);
+		}
         return data;
     }
 
@@ -43,10 +31,11 @@ $(function () {
     
     function getTicks(){
 		var ticks = [];
-		for(i=0;i<totalPoints;i++){
+		for(i=1;i<=totalPoints;i++){
 			ticks.push([i,i.toString()]);
 		}
-		return ticks;
+		//console.log("ticks are: "+ ticks);
+		return ticks;	
 	};
 	
 	var ballCount = parseInt($("#ball_number").html());
