@@ -19,11 +19,25 @@ var currentlyPressedKeys = {};
 
   function handleKeyUp(event) {
     currentlyPressedKeys[event.keyCode] = false;
-	xSpeed = 0;
-	ySpeed = 0;
+	//rotSpeed =0;
   }
   
-  function handleKeys() {
+
+// rotation variables for cube
+var rotSpeed =2;
+var xRot = 0;
+var yRot = 0;
+
+function degToRad(degrees) {
+	return degrees * Math.PI / 180;
+}
+
+var sphereRotationMatrix = old_mat4().create();
+old_mat4().identity(sphereRotationMatrix);
+  
+function handleKeys() {
+	var newRotationMatrix = old_mat4().create();
+	old_mat4().identity(newRotationMatrix);
     if (currentlyPressedKeys[33]) {
       // Page Up
       zoom += 0.1;
@@ -40,28 +54,30 @@ var currentlyPressedKeys = {};
 	}
     if (currentlyPressedKeys[37]) {
       // Left cursor key
-      ySpeed -= 1;
+	  //old_mat4().rotate(newRotationMatrix, degToRad(rotSpeed), [0, -1, 0]);
+	  yRot -= 1;
     }
     if (currentlyPressedKeys[39]) {
       // Right cursor key
-      ySpeed += 1;
+	  //old_mat4().rotate(newRotationMatrix, degToRad(rotSpeed), [0, 1, 0]);
+	   yRot += 1;
     }
     if (currentlyPressedKeys[38]) {
       // Up cursor key
-      xSpeed -= 1;
+      //old_mat4().rotate(newRotationMatrix, degToRad(rotSpeed), [-1, 0, 0]);
+      xRot -= 1;
     }
     if (currentlyPressedKeys[40]) {
       // Down cursor key
-      xSpeed += 1;
+      //old_mat4().rotate(newRotationMatrix, degToRad(rotSpeed), [1, 0, 0]);
+      xRot += 1;
     }
+    //old_mat4().multiply(newRotationMatrix, sphereRotationMatrix, sphereRotationMatrix);
   }
   
   var mouseDown = false;
   var lastMouseX = null;
   var lastMouseY = null;
-
-  var sphereRotationMatrix = old_mat4().create();
-  old_mat4().identity(sphereRotationMatrix);
   
   function handleMouseDown(event) {
     mouseDown = true;
