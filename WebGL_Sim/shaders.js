@@ -75,4 +75,5 @@ function initShaders() {
     shaderProgram.directionalColorUniform = gl.getUniformLocation(shaderProgram, "uDirectionalColor");
 	
 	shaderProgram.alphaUniform = gl.getUniformLocation(shaderProgram, "uAlpha");
+	shaderProgram.colorUniform = gl.getUniformLocation(shaderProgram, "uColor");
 }

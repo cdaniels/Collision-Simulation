@@ -14,7 +14,12 @@ function initGL(canvas) {
 	if (!gl) {
 		alert("Could not initialise WebGL, sorry :-(");
 	}
+	
 }
+
+//default color
+var whiteColor = new Float32Array([1, 1, 1, 1]);
+
 
 /***************** matrices *****************/
 var mvMatrix = old_mat4().create();
@@ -158,8 +163,11 @@ function drawSphere(posV){
 		old_mat4().translate(mvMatrix, posV);
 		
 		//set texture
-		gl.activeTexture(gl.TEXTURE0);
-		gl.bindTexture(gl.TEXTURE_2D, ballTexture);
+		//gl.activeTexture(gl.TEXTURE0);
+		//gl.bindTexture(gl.TEXTURE_2D, ballTexture);
+		gl.uniform4f(shaderProgram.colorUniform, 0,0,1,1);  // use the color I want
+		gl.bindTexture(gl.TEXTURE_2D, whiteTexture);  // use the white texture
+		
 		gl.uniform1i(shaderProgram.samplerUniform, 0.5);
 		gl.uniform1i(shaderProgram.alphaUniform, 1);
 
@@ -206,6 +214,7 @@ function drawBox(){
 		//gl.bindTexture(gl.TEXTURE_2D, neheTexture);
 		//gl.bindTexture(gl.TEXTURE_2D, crateTextures[filter]);//for switching textures
 		//gl.bindTexture(gl.TEXTURE_2D, crateTexture);//for single texture
+		gl.uniform4f(shaderProgram.colorUniform, 1,1,1,1);  // use white color
 		gl.bindTexture(gl.TEXTURE_2D, boxTexture);//for stained glass
 		gl.uniform1i(shaderProgram.samplerUniform, 0);
 		

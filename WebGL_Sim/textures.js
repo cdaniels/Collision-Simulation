@@ -2,6 +2,9 @@
 var boxTexture;
 var ballTexture;
 
+var whiteTexture;
+var whitePixel;
+
 
 function initTexture() {
 	
@@ -25,6 +28,13 @@ function initTexture() {
 
 	//boxTexture.image.src = "textures/grid.gif";
 	boxTexture.image.src = document.getElementById("grid_tex").src;
+	
+	//dummy texture for drawing colors
+	whiteTexture = gl.createTexture();
+	gl.bindTexture(gl.TEXTURE_2D, whiteTexture);
+	whitePixel = new Uint8Array([255, 255, 255, 255]);
+	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, 
+				  gl.RGBA, gl.UNSIGNED_BYTE, whitePixel);
 }
   
 function handleLoadedTexture(texture) {
