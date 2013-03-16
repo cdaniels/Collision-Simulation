@@ -38,6 +38,8 @@ $(function () {
 		return ticks;	
 	};
 	
+	
+	
 	var ballCount = parseInt($("#ball_number").html());
     // setup plot
     var options = {

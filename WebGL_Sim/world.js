@@ -60,6 +60,21 @@ function initWorld() {
 	//for(i=0;i<tick_count;i++){
 	//	temp_array.push(1);
 	//}
+	/*var __createObject = function (width, height, depth, speed, x, y) {
+		x = x || d.width/2;
+		y = y || d.height/2;
+
+		var obj = {
+			__center: vec3.create([__rand(__minX, __maxX), __rand(__minY, __maxY), __rand(__minZ, __maxZ)]),
+			//__radius: vec3.create([width * 0.1, height * 0.1, depth * 0.1]),
+			__radius: vec3.create([+width * 0.1, +height * 0.1, +depth * 0.1]),
+			__velocity: vec3.create([speed*__rand(-5, 5), speed*__rand(-5, 5), speed*__rand(-5, -5)]),
+
+			integrate: __integrate
+		};
+		__objs.push(obj);
+		__tree.insert(obj);
+	 };*/
 }
 
 function sortVelocity(velocity){
@@ -78,6 +93,7 @@ function sortVelocity(velocity){
 	}
 	//console.log("sorted");
 }
+
 
 function processCollisions(index){
 	i = index;
@@ -175,3 +191,26 @@ function processCollisions(index){
 		}
 	}
 }
+
+var b_length = parseInt($("#box_length").html());
+// heres where the octree code begins
+/*var __createTree = function () {
+    NODE_COUNTER = 0;
+
+    return new OctTree(
+		vec3.create([0, 0, 0]),
+		vec3.create([b_length, b_length, b_length]),
+		__form.level.value,
+		__form.split.value,
+		__form.subtree.checked
+    );
+};
+
+//var __minX = -b_length;
+//var __maxX = b_length;
+//var __minY = -b_length;
+//var __maxY = b_length;
+//var __minZ = -b_length;
+//var __maxZ = b_length;
+__objs = [];
+ __tree = __createTree(); */
