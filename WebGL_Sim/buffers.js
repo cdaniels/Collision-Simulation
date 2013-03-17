@@ -45,10 +45,11 @@ function initBuffers() {
         var z = sinPhi * sinTheta;
         var u = 1 - (longNumber / longitudeBands);
         var v = 1 - (latNumber / latitudeBands);
-
-        normalData.push(x);
-        normalData.push(y);
-        normalData.push(z);
+		
+		normalScalar = -1; // normal is inverted for blending purposes
+        normalData.push(x*normalScalar);
+        normalData.push(y*normalScalar);
+        normalData.push(z*normalScalar);
         textureCoordData.push(u);
         textureCoordData.push(v);
         vertexPositionData.push(radius * x);

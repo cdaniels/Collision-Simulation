@@ -49,18 +49,15 @@ function setMatrixUniforms() {
     gl.uniformMatrix3fv(shaderProgram.nMatrixUniform, false, normalMatrix);
 }
 
-/************************** display **********************/
-//global
-var sceneCenter = [0.0, 0.0, -40.0];
-var zoom = -4.0;
-
 function tick() {
 	requestAnimFrame(tick);
 	handleKeys();
 	if(document.getElementById("toggle_display").checked){
 		drawScene();
 	}
+	//drawBox();
 	handlePhysics();
+	//drawBox();
 	drawCage()
 }
 

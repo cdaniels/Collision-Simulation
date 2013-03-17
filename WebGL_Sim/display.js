@@ -1,3 +1,9 @@
+/************************** display **********************/
+//global
+var sceneCenter = [0.0, 0.0, -40.0];
+var zoom = -4.0;
+
+
 function drawScene() {
 	gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -59,7 +65,8 @@ function drawSphere(posV){
 	mvPushMatrix();
 	//gl.disable(gl.BLEND);
 	//gl.uniform1i(shaderProgram.useLightingUniform, 0);
-    gl.enable(gl.DEPTH_TEST);
+	gl.uniform1f(shaderProgram.alphaUniform, 1);
+	gl.enable(gl.DEPTH_TEST);
 		old_mat4().identity(mvMatrix);
 		old_mat4().translate(mvMatrix, sceneCenter);
 		old_mat4().translate(mvMatrix, [0.0, 0.0, zoom]);
@@ -94,7 +101,8 @@ function drawSphere(posV){
 		gl.drawElements(gl.TRIANGLES, sphereVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
 	gl.disable(gl.DEPTH_TEST);
 	//gl.enable(gl.BLEND);
-	//gl.uniform1i(shaderProgram.useLightingUniform, 1);   
+	//gl.uniform1i(shaderProgram.useLightingUniform, 1);
+	gl.uniform1f(shaderProgram.alphaUniform, parseFloat(document.getElementById("alpha").value));   
 	mvPopMatrix();
 }
 
@@ -107,7 +115,6 @@ function drawBox(){
 		old_mat4().rotate(mvMatrix, degToRad(xRot), [1, 0, 0]);
 		old_mat4().rotate(mvMatrix, degToRad(yRot), [0, 1, 0]);
 		old_mat4().multiply(mvMatrix, sphereRotationMatrix);
-		
 		
 		//bind position buffer
 		gl.bindBuffer(gl.ARRAY_BUFFER, cubeVertexPositionBuffer);
@@ -122,7 +129,7 @@ function drawBox(){
 		gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, cubeVertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
 		gl.activeTexture(gl.TEXTURE0);
 		
-		gl.uniform4f(shaderProgram.colorUniform, 1,1,1,1);  // use white color
+		gl.uniform4f(shaderProgram.colorUniform, 0,.5,0,.5);  // use white color
 		gl.bindTexture(gl.TEXTURE_2D, boxTexture);//for stained glass
 		gl.uniform1i(shaderProgram.samplerUniform, 0);
 		
