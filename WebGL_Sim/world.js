@@ -13,6 +13,22 @@ function getRandomArbitary (min, max) {
     return Math.random() * (max - min) + min;
 }
 
+function sortVelocity(velocity){
+	var vRange = parseFloat($("#ball_speed").html());
+	var tick_range = vRange/tick_count;
+	//console.log(vRange);
+	//console.log(tick_range);
+	for(i=0;i<=tick_count;i++){
+		var velMag = vec3.length(velocity);
+		//console.log(velMag);
+		//console.log(i * tick_range);
+		if( (velMag > (2*(i) * tick_range))&&
+			(velMag < (2*(i+1) * tick_range))){
+				temp_array[i] += 1;
+		}
+	}
+}
+
 function initWorld() {
 	var ball_num =  parseInt($("#ball_number").html());
 	var bound = parseFloat($("#box_length").html());
@@ -46,6 +62,8 @@ function initWorld() {
 
 function handlePhysics(){
 	temp_array = makeArrayOf(0,tick_count);
+	drawBox();
+	
 	var ball_count = $("#ball_number").html();
 	for(i=0;i<ball_count;i++){
 		
@@ -55,7 +73,7 @@ function handlePhysics(){
 		//sortVelocity(vec3.clone(velV[i])); //could be before too
 	}
 	velRange_array = temp_array;
-	drawBox();
+	//drawBox();
 }
 
 function processCollisions(index){

@@ -14,22 +14,6 @@ function makeArrayOf(value, length) {
   return arr;
 }
 
-function sortVelocity(velocity){
-	var vRange = parseFloat($("#ball_speed").html());
-	var tick_range = vRange/tick_count;
-	//console.log(vRange);
-	//console.log(tick_range);
-	for(i=0;i<=tick_count;i++){
-		var velMag = vec3.length(velocity);
-		//console.log(velMag);
-		//console.log(i * tick_range);
-		if( (velMag > (2*(i) * tick_range))&&
-			(velMag < (2*(i+1) * tick_range))){
-				temp_array[i] += 1;
-		}
-	}
-}
-
 $(function () {
     
     //load velocity data
