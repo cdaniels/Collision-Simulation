@@ -35,15 +35,16 @@ function sortVelocity(velocity){
 	var tick_range = vRange/tick_count;
 	//console.log(vRange);
 	//console.log(tick_range);
-	for(i=0;i<=tick_count;i++){
+	for(j=0;j<=tick_count;j++){
 		var velMag = vec3.length(velocity);
 		//console.log(velMag);
 		//console.log(i * tick_range);
-		if( (velMag > (2*(i) * tick_range))&&
-			(velMag < (2*(i+1) * tick_range))){
-				temp_array[i] += 1;
+		if( (velMag > (2*(j) * tick_range))&&
+			(velMag < (2*(j+1) * tick_range))){
+				temp_array[j] += 1;
 		}
 	}
+	//console.log(velV);
 }
 
 function initWorld() {
@@ -72,9 +73,9 @@ function initWorld() {
 		}
 	}
 	// create size of empty graph array
-	for(i=0;i<tick_count;i++){
-		temp_array.push(1);
-	}
+	//for(i=0;i<tick_count;i++){
+	//	temp_array.push(1);
+	//}
 }
 
 function handlePhysics(){
@@ -84,10 +85,13 @@ function handlePhysics(){
 	var ball_num = $("#ball_number").html();
 	for(i=0;i < ball_num;i++){
 		//console.log("loop"+i);
+		//console.log(ball_num);
 		processCollisions(i);
 		drawSphere(posV[i]);
 		//add velocity to sort array
-		//sortVelocity(vec3.clone(velV[i])); //could be before too
+		//console.log("before sort"+i);
+		sortVelocity(vec3.clone(velV[i])); //could be before too
+		//console.log("after sort"+i);
 	}
 	velRange_array = temp_array;
 	drawBox();

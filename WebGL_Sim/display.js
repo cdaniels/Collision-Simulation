@@ -62,20 +62,15 @@ function drawScene() {
 		//add velocity to sort array
 		//sortVelocity(vec3.clone(velV[i])); //could be before too
 	}
-	velRange_array = temp_array;*/
-	//handlePhysics();
-	//for(var i=0;i<ball_num;i++){
-		//var pos = [0.0,0.0,0.0];
-	//	drawSphere(posV[i]);
-	//}
-	//drawBox();
-	
-	
+	velRange_array = temp_array;
+	drawBox();*/
 }
 
 function drawSphere(posV){
 	//TODO make color editable
 	var ballColor = [1,0,0,1]; 
+	
+	//console.log("spere at: "+posV[0]);
 	
 	//sphere
 	mvPushMatrix();

@@ -49,9 +49,6 @@ function setMatrixUniforms() {
     gl.uniformMatrix3fv(shaderProgram.nMatrixUniform, false, normalMatrix);
 }
 
-
-
-
 /************************** display **********************/
 //global
 var sceneCenter = [0.0, 0.0, -40.0];
