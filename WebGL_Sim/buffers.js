@@ -1,25 +1,22 @@
 
-//temporary globals
-//var box_length = 10.0;
-//var ball_radius = 2;
-
 
 /***************** buffers *****************/
 
+//cube buffers
 var cubeVertexPositionBuffer;
-//var cubeVertexColorBuffer;
 var cubeVertexTextureCoordBuffer;
 var cubeVertexIndexBuffer;
-
-//star buffers
-var starVertexPositionBuffer;
-var starVertexTextureCoordBuffer;
 
 //sphere buffers
 var sphereVertexPositionBuffer;
 var sphereVertexNormalBuffer;
 var sphereVertexTextureCoordBuffer;
 var sphereVertexIndexBuffer;
+
+//cage buffers
+var cageVertexPositionBuffer;
+//var cageVertexTextureCoordBuffer;
+var cageVertexIndexBuffer;
 
 function initBuffers() {
 	//sphere buffers
@@ -247,29 +244,40 @@ function initBuffers() {
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cubeVertexIndices), gl.STATIC_DRAW);
     cubeVertexIndexBuffer.itemSize = 1;
     cubeVertexIndexBuffer.numItems = 36;
-	
-	//star
-	starVertexPositionBuffer = gl.createBuffer();
-	gl.bindBuffer(gl.ARRAY_BUFFER, starVertexPositionBuffer);
+    
+    //cage vertices
+    //cage face position
+	cageVertexPositionBuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, cageVertexPositionBuffer);
 	vertices = [
-		-1.0, -1.0,  0.0,
-		 1.0, -1.0,  0.0,
-		-1.0,  1.0,  0.0,
-		 1.0,  1.0,  0.0
-	];
-	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-	starVertexPositionBuffer.itemSize = 3;
-	starVertexPositionBuffer.numItems = 4;
+      // Top face
+		-r, r,-r,
+		r, r,-r,
+		r, r, r,
+		-r, r, r,
 
-	starVertexTextureCoordBuffer = gl.createBuffer();
-	gl.bindBuffer(gl.ARRAY_BUFFER, starVertexTextureCoordBuffer);
-	var textureCoords = [
-		0.0, 0.0,
-		1.0, 0.0,
-		0.0, 1.0,
-		1.0, 1.0
-	];
-	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoords), gl.STATIC_DRAW);
-	starVertexTextureCoordBuffer.itemSize = 2;
-	starVertexTextureCoordBuffer.numItems = 4;
+      // Bottom face
+		-r,-r, -r,
+		r,-r, -r,
+		r,-r,r,
+		-r,-r,r,
+    ];
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+	cageVertexPositionBuffer.itemSize = 3;
+	cageVertexPositionBuffer.numItems = 8;
+	
+	//index
+	cageVertexIndexBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cageVertexIndexBuffer);
+    var cageVertexIndices = [
+	  0, 1, 2, 3,	 // Top face
+      0, 4, 7, 3,    // Front face
+      2, 6, 7, 3, 	 // Left face
+      2, 6, 5, 1,    // Back face
+      0, 4, 5, 1    // Right face
+      //5, 6, 7, 4    // Right face
+    ]
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cageVertexIndices), gl.STATIC_DRAW);
+    cageVertexIndexBuffer.itemSize = 4;
+    cageVertexIndexBuffer.numItems = 20;
 }

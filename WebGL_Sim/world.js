@@ -33,18 +33,13 @@ function getRandomArbitary (min, max) {
 function sortVelocity(velocity){
 	var vRange = parseFloat($("#ball_speed").html());
 	var tick_range = vRange/tick_count;
-	//console.log(vRange);
-	//console.log(tick_range);
 	for(j=0;j<=tick_count;j++){
 		var velMag = vec3.length(velocity);
-		//console.log(velMag);
-		//console.log(i * tick_range);
 		if( (velMag > (2*(j) * tick_range))&&
 			(velMag < (2*(j+1) * tick_range))){
 				temp_array[j] += 1;
 		}
 	}
-	//console.log(velV);
 }
 
 function initWorld() {
@@ -72,29 +67,21 @@ function initWorld() {
 			velV.push(randVel);
 		}
 	}
-	// create size of empty graph array
-	//for(i=0;i<tick_count;i++){
-	//	temp_array.push(1);
-	//}
 }
 
 function handlePhysics(){
 	temp_array = makeArrayOf(0,tick_count);
-	//drawBox();
-	
 	var ball_num = $("#ball_number").html();
 	for(i=0;i < ball_num;i++){
-		//console.log("loop"+i);
-		//console.log(ball_num);
 		processCollisions(i);
-		drawSphere(posV[i]);
+		if(document.getElementById("toggle_display").checked){
+			drawSphere(posV[i]);
+		}
 		//add velocity to sort array
-		//console.log("before sort"+i);
 		sortVelocity(vec3.clone(velV[i])); //could be before too
-		//console.log("after sort"+i);
 	}
 	velRange_array = temp_array;
-	drawBox();
+	//drawBox();
 }
 
 function processCollisions(index){

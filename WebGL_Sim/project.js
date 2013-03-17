@@ -57,13 +57,15 @@ var zoom = -4.0;
 function tick() {
 	requestAnimFrame(tick);
 	handleKeys();
-	drawScene();
-	//handlePhysics();
+	if(document.getElementById("toggle_display").checked){
+		drawScene();
+	}
+	handlePhysics();
+	drawCage()
 }
 
 function webGLStart() {
 	var canvas = document.getElementById("mycanvas");
-	//console.log(ball_num);
 	initGL(canvas);
 	initShaders();
 	initBuffers();

@@ -47,34 +47,18 @@ function drawScene() {
 			parseFloat(document.getElementById("directionalB").value)
 		);
 	}
-	
-	//drawBox();
-	handlePhysics();
-	
-	/*temp_array = makeArrayOf(0,tick_count);
-	var ball_num = $("#ball_number").html();
-	//console.log(ball_num);
-	for(i=0;i<ball_num;i++){
-		//sortVelocity(vec3.clone(velV[i])); //could be before too
-		drawSphere(posV[i]);
-		processCollisions(i);
-		
-		//add velocity to sort array
-		//sortVelocity(vec3.clone(velV[i])); //could be before too
-	}
-	velRange_array = temp_array;
-	drawBox();*/
+	drawBox();
+	//drawCage()
 }
 
 function drawSphere(posV){
 	//TODO make color editable
 	var ballColor = [1,0,0,1]; 
 	
-	//console.log("spere at: "+posV[0]);
-	
 	//sphere
 	mvPushMatrix();
-	gl.disable(gl.BLEND);
+	//gl.disable(gl.BLEND);
+	//gl.uniform1i(shaderProgram.useLightingUniform, 0);
     gl.enable(gl.DEPTH_TEST);
 		old_mat4().identity(mvMatrix);
 		old_mat4().translate(mvMatrix, sceneCenter);
@@ -109,7 +93,8 @@ function drawSphere(posV){
 		setMatrixUniforms();
 		gl.drawElements(gl.TRIANGLES, sphereVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
 	gl.disable(gl.DEPTH_TEST);
-	gl.enable(gl.BLEND);    
+	//gl.enable(gl.BLEND);
+	//gl.uniform1i(shaderProgram.useLightingUniform, 1);   
 	mvPopMatrix();
 }
 
@@ -148,4 +133,46 @@ function drawBox(){
 		gl.drawElements(gl.TRIANGLES, cubeVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
 		//gl.drawArrays(gl.TRIANGLE_STRIP, 0, cubeVertexPositionBuffer.numItems);
 	mvPopMatrix();
+}
+
+function drawCage(){
+	//wire frame cage
+	gl.disable(gl.BLEND);
+	gl.enable(gl.DEPTH_TEST);
+	gl.uniform1i(shaderProgram.useLightingUniform, 0);
+	mvPushMatrix();
+		old_mat4().identity(mvMatrix);
+		old_mat4().translate(mvMatrix, sceneCenter);
+		old_mat4().translate(mvMatrix, [0.0, 0.0, zoom]);
+		old_mat4().rotate(mvMatrix, degToRad(xRot), [1, 0, 0]);
+		old_mat4().rotate(mvMatrix, degToRad(yRot), [0, 1, 0]);
+		old_mat4().multiply(mvMatrix, sphereRotationMatrix);
+		
+		
+		//bind position buffer
+		gl.bindBuffer(gl.ARRAY_BUFFER, cageVertexPositionBuffer);
+		gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, cageVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+		
+		//bind normal buffer
+		gl.bindBuffer(gl.ARRAY_BUFFER, cubeVertexNormalBuffer);
+		gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, cubeVertexNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);
+		
+		//bind texture buffer
+		gl.bindBuffer(gl.ARRAY_BUFFER, cubeVertexTextureCoordBuffer);
+		gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, cubeVertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
+		gl.activeTexture(gl.TEXTURE0);
+		
+		gl.uniform4f(shaderProgram.colorUniform, 0,1,0,1);  // use white color
+		gl.bindTexture(gl.TEXTURE_2D, whiteTexture);//for stained glass
+		gl.uniform1i(shaderProgram.samplerUniform, 0);
+		
+		//draw
+		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cageVertexIndexBuffer);
+		setMatrixUniforms();
+		gl.drawElements(gl.LINE_STRIP, cageVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+		//gl.drawArrays(gl.TRIANGLE_STRIP, 0, cubeVertexPositionBuffer.numItems);
+	mvPopMatrix();
+	gl.uniform1i(shaderProgram.useLightingUniform, 1);
+	gl.disable(gl.DEPTH_TEST);
+	gl.enable(gl.BLEND);
 }
