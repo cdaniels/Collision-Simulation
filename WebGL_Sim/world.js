@@ -3,12 +3,6 @@
 var posV = [];
 var velV = [];
 
-var tick_count = 10;
-var temp_array = makeArrayOf(0,tick_count);
-var velRange_array = makeArrayOf(0,tick_count);
-
-
-
 var impulse_total = 0;
 var startTime = new Date().getTime();
 
@@ -17,18 +11,6 @@ var startTime = new Date().getTime();
  */
 function getRandomArbitary (min, max) {
     return Math.random() * (max - min) + min;
-}
-	
-/**
- * makes an array of a certain length filled with a certain value
- * copied from http://stackoverflow.com/questions/1295584/most-efficient-way-to-create-a-zero-filled-javascript-array
- */
-function makeArrayOf(value, length) {
-  var arr = [], i = length;
-  while (i--) {
-    arr[i] = value;
-  }
-  return arr;
 }
 
 function initWorld() {
@@ -62,25 +44,23 @@ function initWorld() {
 	//}
 }
 
-function sortVelocity(velocity){
-	var vRange = parseFloat($("#ball_speed").html());
-	var tick_range = vRange/tick_count;
-	//console.log(vRange);
-	//console.log(tick_range);
-	for(i=0;i<=tick_count;i++){
-		var velMag = vec3.length(velocity);
-		//console.log(velMag);
-		//console.log(i * tick_range);
-		if( (velMag > ((i) * tick_range))&&
-			(velMag < ((i+1) * tick_range))){
-				temp_array[i] += 1;
-		}
+function handlePhysics(){
+	temp_array = makeArrayOf(0,tick_count);
+	var ball_count = $("#ball_number").html();
+	for(i=0;i<ball_count;i++){
+		
+		processCollisions(i);
+		drawSphere(posV[i]);
+		//add velocity to sort array
+		//sortVelocity(vec3.clone(velV[i])); //could be before too
 	}
-	//console.log("sorted");
+	velRange_array = temp_array;
+	drawBox();
 }
 
 function processCollisions(index){
 	i = index;
+	
 	var currTime = new Date().getTime() - startTime;
 	$("#run_time").html(Math.round(currTime/1000));
 	//$("#box_pressure").html(Math.round(impulse_total));

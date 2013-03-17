@@ -1,3 +1,35 @@
+var tick_count = 10;
+var temp_array = makeArrayOf(0,tick_count);
+var velRange_array = makeArrayOf(0,tick_count);
+
+/**
+ * makes an array of a certain length filled with a certain value
+ * copied from http://stackoverflow.com/questions/1295584/most-efficient-way-to-create-a-zero-filled-javascript-array
+ */
+function makeArrayOf(value, length) {
+  var arr = [], i = length;
+  while (i--) {
+    arr[i] = value;
+  }
+  return arr;
+}
+
+function sortVelocity(velocity){
+	var vRange = parseFloat($("#ball_speed").html());
+	var tick_range = vRange/tick_count;
+	//console.log(vRange);
+	//console.log(tick_range);
+	for(i=0;i<=tick_count;i++){
+		var velMag = vec3.length(velocity);
+		//console.log(velMag);
+		//console.log(i * tick_range);
+		if( (velMag > (2*(i) * tick_range))&&
+			(velMag < (2*(i+1) * tick_range))){
+				temp_array[i] += 1;
+		}
+	}
+}
+
 $(function () {
     
     //load velocity data
@@ -10,7 +42,7 @@ $(function () {
         //console.log(totalPoints);
         for (var i = 1; i <= totalPoints; ++i){
             //data.push([i, velRange_array[i]]);
-            data.push([i, velRange_array[i]]);
+            data.push([i, velRange_array[i-1]]);
 		}
         return data;
     }
@@ -38,11 +70,11 @@ $(function () {
 		return ticks;	
 	};
 	
-	var ballCount = parseInt($("#ball_number").html());
+	//var ballCount = parseInt($("#ball_number").html());
     // setup plot
     var options = {
         series: { shadowSize: 0 }, // drawing is faster without shadows
-        yaxis: { min: 0, max: ballCount },
+        yaxis: { min: 0, max: parseInt($("#ball_number").html())},
         xaxis: { ticks: getTicks()},
         bars: {
 			show: true,
@@ -50,17 +82,13 @@ $(function () {
 			align: "center"
 		}
     };
-    //var plot = $.plot($("#graph_1"), [ getRandomData() ], options);
-    var plot = $.plot($("#graph_1"), [ getData() ], options);
-
+    
     function update() {
-        plot.setData([ getData() ]);
-        // since the axes don't change, we don't need to call plot.setupGrid()
-        plot.draw();
-        
+		options.yaxis.max = parseInt($("#ball_number").html())/2;
+		plot = $.plot($("#graph_1"), [ getData() ], options);
+        //plot.draw();
         setTimeout(update, updateInterval);
     }
-
     update();
 });
 
@@ -109,7 +137,7 @@ $(function () {
     var options = {
         series: { shadowSize: 0 }, // drawing is faster without shadows
         yaxis: { min: 0, max: 100 },
-        xaxis: { show: false }
+        xaxis: { show: true }
     };
     //var plot = $.plot($("#graph_1"), [ getRandomData() ], options);
     var plot = $.plot($("#graph_2"), [ getRandomData() ], options);

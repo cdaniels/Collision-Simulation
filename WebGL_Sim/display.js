@@ -1,11 +1,8 @@
 function drawScene() {
 	gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-	
-	
 
 	old_mat4().perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
-
 	old_mat4().identity(mvMatrix);
 	//mat4.translate(mvMatrix, [0.0, 0.0, zoom]);
 	//mat4.multiply(mvMatrix, sphereRotationMatrix);
@@ -52,24 +49,32 @@ function drawScene() {
 	}
 	
 	//drawBox();
-	var ball_num =  $("#ball_number").html();
-	//console.log(temp_array);
-	temp_array = makeArrayOf(0,tick_count);
-	
-	for(var i=0;i<ball_num;i++){
-		//var pos = [0.0,0.0,0.0];
+	/*temp_array = makeArrayOf(0,tick_count);
+	var ball_num = $("#ball_number").html();
+	//console.log(ball_num);
+	for(i=0;i<ball_num;i++){
+		//sortVelocity(vec3.clone(velV[i])); //could be before too
 		drawSphere(posV[i]);
 		processCollisions(i);
+		
 		//add velocity to sort array
-		sortVelocity(vec3.clone(velV[i])); //could be before too
+		//sortVelocity(vec3.clone(velV[i])); //could be before too
 	}
-	velRange_array = temp_array;
-	drawBox();
+	velRange_array = temp_array;*/
+	//handlePhysics();
+	//for(var i=0;i<ball_num;i++){
+		//var pos = [0.0,0.0,0.0];
+	//	drawSphere(posV[i]);
+	//}
+	//drawBox();
 	
 	
 }
 
 function drawSphere(posV){
+	//TODO make color editable
+	var ballColor = [1,0,0,1]; 
+	
 	//sphere
 	mvPushMatrix();
 	gl.disable(gl.BLEND);
@@ -81,16 +86,14 @@ function drawSphere(posV){
 		old_mat4().rotate(mvMatrix, degToRad(yRot), [0, 1, 0]);
 		old_mat4().multiply(mvMatrix, sphereRotationMatrix);
 		
-		
 		//translate to specific position
-		//position =[posV.e(1),posV.e(2),posV.e(3)];
-		//position =[posV,posV.e(2),posV.e(3)];
 		old_mat4().translate(mvMatrix, posV);
 		
 		//set texture
 		//gl.activeTexture(gl.TEXTURE0);
 		//gl.bindTexture(gl.TEXTURE_2D, ballTexture);
-		gl.uniform4f(shaderProgram.colorUniform, 0,0,1,1);  // use the color I want
+		var c =ballColor;
+		gl.uniform4f(shaderProgram.colorUniform, c[0],c[1],c[2],c[3]);  // use the color I want
 		gl.bindTexture(gl.TEXTURE_2D, whiteTexture);  // use the white texture
 		
 		gl.uniform1i(shaderProgram.samplerUniform, 0.5);
@@ -136,9 +139,7 @@ function drawBox(){
 		gl.bindBuffer(gl.ARRAY_BUFFER, cubeVertexTextureCoordBuffer);
 		gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, cubeVertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
 		gl.activeTexture(gl.TEXTURE0);
-		//gl.bindTexture(gl.TEXTURE_2D, neheTexture);
-		//gl.bindTexture(gl.TEXTURE_2D, crateTextures[filter]);//for switching textures
-		//gl.bindTexture(gl.TEXTURE_2D, crateTexture);//for single texture
+		
 		gl.uniform4f(shaderProgram.colorUniform, 1,1,1,1);  // use white color
 		gl.bindTexture(gl.TEXTURE_2D, boxTexture);//for stained glass
 		gl.uniform1i(shaderProgram.samplerUniform, 0);
