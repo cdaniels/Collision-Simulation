@@ -49,6 +49,8 @@ function drawScene() {
 	}
 	
 	//drawBox();
+	handlePhysics();
+	
 	/*temp_array = makeArrayOf(0,tick_count);
 	var ball_num = $("#ball_number").html();
 	//console.log(ball_num);

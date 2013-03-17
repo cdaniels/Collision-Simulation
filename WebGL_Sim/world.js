@@ -6,6 +6,23 @@ var velV = [];
 var impulse_total = 0;
 var startTime = new Date().getTime();
 
+var tick_count = 10;
+var temp_array = makeArrayOf(0,tick_count);
+var velRange_array = makeArrayOf(0,tick_count);
+
+/**
+ * makes an array of a certain length filled with a certain value
+ * copied from http://stackoverflow.com/questions/1295584/most-efficient-way-to-create-a-zero-filled-javascript-array
+ */
+function makeArrayOf(value, length) {
+  var arr = [], i = length;
+  while (i--) {
+    arr[i] = value;
+  }
+  return arr;
+}
+
+
 /**
  * Returns a random number between min and max
  */
@@ -55,25 +72,25 @@ function initWorld() {
 		}
 	}
 	// create size of empty graph array
-	//for(i=0;i<tick_count;i++){
-	//	temp_array.push(1);
-	//}
+	for(i=0;i<tick_count;i++){
+		temp_array.push(1);
+	}
 }
 
 function handlePhysics(){
 	temp_array = makeArrayOf(0,tick_count);
-	drawBox();
+	//drawBox();
 	
-	var ball_count = $("#ball_number").html();
-	for(i=0;i<ball_count;i++){
-		
+	var ball_num = $("#ball_number").html();
+	for(i=0;i < ball_num;i++){
+		//console.log("loop"+i);
 		processCollisions(i);
 		drawSphere(posV[i]);
 		//add velocity to sort array
 		//sortVelocity(vec3.clone(velV[i])); //could be before too
 	}
 	velRange_array = temp_array;
-	//drawBox();
+	drawBox();
 }
 
 function processCollisions(index){

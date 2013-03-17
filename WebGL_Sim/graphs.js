@@ -1,18 +1,4 @@
-var tick_count = 10;
-var temp_array = makeArrayOf(0,tick_count);
-var velRange_array = makeArrayOf(0,tick_count);
 
-/**
- * makes an array of a certain length filled with a certain value
- * copied from http://stackoverflow.com/questions/1295584/most-efficient-way-to-create-a-zero-filled-javascript-array
- */
-function makeArrayOf(value, length) {
-  var arr = [], i = length;
-  while (i--) {
-    arr[i] = value;
-  }
-  return arr;
-}
 
 $(function () {
     

@@ -61,7 +61,7 @@ function tick() {
 	requestAnimFrame(tick);
 	handleKeys();
 	drawScene();
-	handlePhysics();
+	//handlePhysics();
 }
 
 function webGLStart() {
