@@ -119,8 +119,14 @@ function processCollisions(index){
 	var radius =  parseFloat($("#ball_radius").html());
 	var mass = 1; // mass for each particle
 	//console.log("radius is: " + radius);
-	var ball_num =  parseInt($("#ball_number").html());
+	
+	handleBallWallCollisions(iPos,iVel,radius,mass);
+	handleBallBallCollisions(iPos,iVel,radius,mass);
+}
 
+function handleBallWallCollisions(iPos,iVel,radius,mass,bound){
+	var bound = parseFloat($("#box_length").html());
+	//var bound = $( ".selector" ).slider( "value" );
 	if (((iPos[0] - radius <= -bound)&&(iVel[0]<=0))||((iPos[0]  + radius >= bound)&&(iVel[0]>=0))){
 		velV[i][0] *= -1; // reverse direction
 		impulse_total += 2*mass*Math.abs(velV[i][0]); // add change to total impulse
@@ -139,8 +145,10 @@ function processCollisions(index){
 		//setTimeout("impulse_total-=2*Math.abs(velV[i][2])",1000);
 		//console.log(impulse);
 	}
-	
-	
+}
+
+function handleBallBallCollisions(iPos,iVel,radius,mass){
+	var ball_num =  parseInt($("#ball_number").html());
 	for (var j=0;j<ball_num;j++){
 		//iPos = vec3.clone(posV[i]);
 		jPos = vec3.clone(posV[j]);
@@ -194,3 +202,5 @@ function processCollisions(index){
 		}
 	}
 }
+
+
