@@ -5,10 +5,6 @@ var ball_array = [];
 var impulse_total = 0;
 var startTime = new Date().getTime();
 
-var tick_count = 10;
-var temp_array = makeArrayOf(0,tick_count);
-var velRange_array = makeArrayOf(0,tick_count);
-
 /**
  * Constructor for Ball object
  * with specified position and velocity
@@ -41,34 +37,19 @@ function getRandomArbitary (min, max) {
     return Math.random() * (max - min) + min;
 }
 
-function sortVelocity(velocity){
-	var vRange = parseFloat($("#ball_speed").html());
-	var tick_range = vRange/tick_count;
-	for(j=0;j<=tick_count;j++){
-		var velMag = vec3.length(velocity);
-		if( (velMag > (2*(j) * tick_range))&&
-			(velMag < (2*(j+1) * tick_range))){
-				temp_array[j] += 1;
-		}
-	}
-}
 
 function initWorld() {
 	var ball_num =  parseInt($("#ball_number").html());
-	var bound = parseFloat($("#box_length").html());
-	var pRange = bound;
+	var pRange = parseFloat($("#box_length").html());
 	var vRange = parseFloat($("#ball_speed").html());
-	console.log("box_length is: " + bound);
-	console.log("pRange is: " + pRange);
-	console.log("vRange is: " + vRange);
 	if(document.getElementById("debug").checked){
 		// special debug mode for testing collision between two balls
 		ball_num = 2;
 		$("#ball_number").html(ball_num);
-		position_array.push(vec3.fromValues(0,0,0));
-		velocity_array.push(vec3.fromValues(0,0,0));
-		position_array.push(vec3.fromValues(5.0,1.0,0.0));
-		velocity_array.push(vec3.fromValues(-vRange,0,0));
+		var ball_1 = new Ball(vec3.fromValues(0,0,0),vec3.fromValues(0,0,0),parseFloat($("#ball_radius").html()),1);
+		ball_array.push(ball_1);
+		var ball_2 = new Ball(vec3.fromValues(5.0,1.0,0.0),vec3.fromValues(-vRange,0,0),parseFloat($("#ball_radius").html()),1);
+		ball_array.push(ball_2);
 	}else{
 		for (var i=0; i < ball_num; i++){
 			var randPos = vec3.fromValues(getRandomArbitary(-pRange,pRange),getRandomArbitary(-pRange,pRange),getRandomArbitary(-pRange,pRange));
@@ -115,22 +96,15 @@ function processCollisions(index){
 	$("#run_time").html(Math.round(currTime/1000));
 	//$("#box_pressure").html(Math.round(impulse_total));
 	$("#box_pressure").html(Math.round(impulse_total*100000/currTime)/10);
-	//console.log(currTime/1000);
 	
 	//increment position by velocity vector
 	iBall = ball_array[i];
 	vec3.add(iBall.position,iBall.position,iBall.velocity);
 	
 	// collision detection
-	var bound = parseFloat($("#box_length").html());
-	//var bound = $( ".selector" ).slider( "value" );
-	var pRange = bound;
-	var radius =  parseFloat($("#ball_radius").html());
-	var mass = 1; // mass for each particle
-	//console.log("radius is: " + radius);
-;
+	
 	handleBallWallCollisions(iBall);
-
+	
 	var ball_num =  parseInt($("#ball_number").html());
 	for (var j=0;j<ball_num;j++){
 		jBall = ball_array[j];

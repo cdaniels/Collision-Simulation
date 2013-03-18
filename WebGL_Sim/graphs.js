@@ -1,4 +1,18 @@
+var tick_count = 10;
+var temp_array = makeArrayOf(0,tick_count);
+var velRange_array = makeArrayOf(0,tick_count);
 
+function sortVelocity(velocity){
+	var vRange = parseFloat($("#ball_speed").html());
+	var tick_range = vRange/tick_count;
+	for(j=0;j<=tick_count;j++){
+		var velMag = vec3.length(velocity);
+		if( (velMag > (2*(j) * tick_range))&&
+			(velMag < (2*(j+1) * tick_range))){
+				temp_array[j] += 1;
+		}
+	}
+}
 
 $(function () {
     
@@ -66,19 +80,15 @@ $(function () {
 $(function () {
     // we use an inline data source in the example, usually data would
     // be fetched from a server
-    var data = [], totalPoints = 300;
-    function getRandomData() {
+    var data = [], totalPoints = 100;
+    function getVolumeData() {
         if (data.length > 0)
             data = data.slice(1);
 
-        // do a random walk
+        // update value with current enclosure volume
         while (data.length < totalPoints) {
             var prev = data.length > 0 ? data[data.length - 1] : 50;
-            var y = prev + Math.random() * 10 - 5;
-            if (y < 0)
-                y = 0;
-            if (y > 100)
-                y = 100;
+            var y = parseInt($("#box_enclosed").html());
             data.push(y);
         }
 
@@ -106,14 +116,13 @@ $(function () {
     // setup plot
     var options = {
         series: { shadowSize: 0 }, // drawing is faster without shadows
-        yaxis: { min: 0, max: 100 },
+        yaxis: { min: 0, max: 1000 },
         xaxis: { show: true }
     };
-    //var plot = $.plot($("#graph_1"), [ getRandomData() ], options);
-    var plot = $.plot($("#graph_2"), [ getRandomData() ], options);
+    var plot = $.plot($("#graph_2"), [ getVolumeData() ], options);
 
     function update() {
-        plot.setData([ getRandomData() ]);
+        plot.setData([ getVolumeData() ]);
         // since the axes don't change, we don't need to call plot.setupGrid()
         plot.draw();
         
