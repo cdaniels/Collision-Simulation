@@ -158,6 +158,13 @@ function handleBallWallCollisions(iBall){
 		var z_change = 2*mass*Math.abs(iVel[2]);
 		impulse_total += z_change;
 	}
+	// check for collision with stopper
+	var compression = parseFloat($("#compression").html());
+	var side_length = parseFloat($("#box_length").html());
+	if (((iPos[0]  + radius >= compression+side_length)&&(iVel[0]>=0))){
+		iVel[0] *= -1; // reverse direction
+		impulse_total += 2*mass*Math.abs(iVel[0]); // add change to total impulse
+	}
 }
 
 function handleBallBallCollisions(iBall,jBall){
