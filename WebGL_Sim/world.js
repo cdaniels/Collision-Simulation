@@ -1,7 +1,6 @@
 // global values are used for carrying out important 
 // collision computations
 var ball_array = [];
-
 var impulse_total = 0;
 var startTime = new Date().getTime();
 
@@ -64,6 +63,8 @@ function initWorld() {
 
 function handlePhysics(){
 	temp_array = makeArrayOf(0,tick_count);
+	temp_sub1_array = makeArrayOf(0,tick_count);
+	temp_sub2_array = makeArrayOf(0,tick_count);
 	var ball_num1 = $("#ball_number").html()/2;
 	for(i=0;i < ball_num1;i++){
 		processCollisions(i);
@@ -74,6 +75,7 @@ function handlePhysics(){
 		}
 		//add velocity to sort array
 		sortVelocity(vec3.clone(ball_array[i].velocity)); //could be before too
+		sortSub1(vec3.clone(ball_array[i].velocity)); //could be before too
 	}
 	var ball_num2 = $("#ball_number").html()/2;
 	for(i=ball_num1;i < ball_num1+ball_num2;i++){
@@ -85,8 +87,11 @@ function handlePhysics(){
 		}
 		//add velocity to sort array
 		sortVelocity(vec3.clone(ball_array[i].velocity)); //could be before too
+		sortSub2(vec3.clone(ball_array[i].velocity)); //could be before too
 	}
 	velRange_array = temp_array;
+	velRange_sub1_array = temp_sub1_array;
+	velRange_sub2_array = temp_sub2_array;
 }
 
 function processCollisions(index){

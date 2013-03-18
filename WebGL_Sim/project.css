@@ -31,7 +31,7 @@ canvas{
 	display:block;
 	background:tan;
 	border:thin solid black;
-	height: 300px;
+	height: 450px;
 	width:800px;
 	margin:auto;
 }
@@ -57,24 +57,18 @@ canvas{
 }
 
 #graph_box{
-	height:300px;
+	height:450px;
 	width: 400px;
-	float:left;
+	float:right;
 }
 
 .graph{
 	width:400px;
 	height:150px;
+	float:left;
 	/*float:right;*/
 }
 
 .hidden{
 	display:none;
 }
-
-
-/**#mycanvas{
-	border: none; 
-	width:600px;
-	height:300px;
-}**/

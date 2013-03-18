@@ -90,7 +90,9 @@
 			<div id="graph_box">
 				<div id="graph_1" class="graph"></div>
 				<div id="graph_2" class="graph"></div>
+				<div id="graph_3" class="graph"></div>
 			</div>
+			<div id="graph_4" class="graph"></div>
 		</div>
 		<div id="settings_box">
 			<form name="settings" action="" method="get">
@@ -182,15 +184,10 @@ $(function() {
 		max:0,
 		step:0.1,
 		slide: function(event, ui) {
-			//$("#box_length").text(ui.value);
-			//$("#box_volume").html(Math.round(Math.pow(parseFloat($("#box_length").html()),3)));
 			$("#compression").html(ui.value);
 			side_length = parseFloat($("#box_length").html());
 			var stop_distance = ((ui.value+side_length+10)/2);
 			$("#box_enclosed").html(Math.round(parseFloat((side_length*side_length*stop_distance))));
-			//var compression = parseFloat($("#compression").html());
-			//var side_length = parseFloat($("#box_length").html());
-			//if (((iPos[0]  + radius >= compression+side_length)&&(iVel[0]>=0)))
 			initBuffers();
 		}
 	});
