@@ -98,7 +98,8 @@
 				Ball Radius: <span id=ball_radius>1</span><input type="text" name="ball_radius"><br/>
 				Ball Speed: <span id=ball_speed>0.2</span><input type="text" name="ball_speed"><br/>
 				Box Length: <span id=box_length>10</span><input type="text" name="box_length"><br/>
-				Volume: <span id=box_volume></span><br/>
+				Total Volume: <span id=box_volume></span><br/>
+				Volume Enclosed: <span id=box_enclosed></span><br/>
 				Compression: <span id=compression>0</span><br/>
 				Pressure: <span id=box_pressure></span><br/>
 				Time Since Start: <span id=run_time></span><br/>
@@ -174,8 +175,8 @@ $( "#volume_slider" ).slider({
 
 /**dummy function for slider creation**/
 $(function() {
-var side_length = parseFloat($("#box_length").html());
-$( "#compression_slider" ).slider({
+	var side_length = parseFloat($("#box_length").html());
+	$( "#compression_slider" ).slider({
 		value:0,
 		min:-2*side_length,
 		max:0,
@@ -184,6 +185,12 @@ $( "#compression_slider" ).slider({
 			//$("#box_length").text(ui.value);
 			//$("#box_volume").html(Math.round(Math.pow(parseFloat($("#box_length").html()),3)));
 			$("#compression").html(ui.value);
+			side_length = parseFloat($("#box_length").html());
+			var stop_distance = ((ui.value+side_length+10)/2);
+			$("#box_enclosed").html(Math.round(parseFloat((side_length*side_length*stop_distance))));
+			//var compression = parseFloat($("#compression").html());
+			//var side_length = parseFloat($("#box_length").html());
+			//if (((iPos[0]  + radius >= compression+side_length)&&(iVel[0]>=0)))
 			initBuffers();
 		}
 	});
@@ -194,6 +201,7 @@ function checkRefresh(value)
 {
 	document.settings.submit();
 }
+
 /**
 inputs imports system parameters on submit button
 press
@@ -204,12 +212,12 @@ function inputSettings(form){
 	$("#ball_speed").html(form.ball_speed.value);
 	$("#box_length").html(form.box_length.value);
 	$("#box_volume").html(Math.round(Math.pow(parseFloat($("#box_length").html()),3)));
+	//$("#box_volume").html(Math.round(Math.pow(parseFloat($("#box_length").html()),3)));
 	//console.log("sucess!");
 	
 	//restart program
-	posV = [];
-	velV = [];
 	impulse_total = 0;
+	ball_array = [];
 	startTime = new Date().getTime();
 	webGLStart();
 	//window.location.reload();

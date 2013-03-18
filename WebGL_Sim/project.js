@@ -54,12 +54,15 @@ function tick() {
 	handleKeys();
 	if(document.getElementById("toggle_display").checked){
 		drawScene();
-		drawStopper();
+		drawBox();
 	}
-	//drawBox();
 	handlePhysics();
-	drawCage();
-	
+	if(document.getElementById("toggle_display").checked){
+		drawCage();
+		drawStopper();
+	}else{
+		clearDisplay();
+	}
 }
 
 function webGLStart() {

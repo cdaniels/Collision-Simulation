@@ -10,10 +10,6 @@ function drawScene() {
 
 	old_mat4().perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
 	old_mat4().identity(mvMatrix);
-	//mat4.translate(mvMatrix, [0.0, 0.0, zoom]);
-	//mat4.multiply(mvMatrix, sphereRotationMatrix);
-	//mat4.rotate(mvMatrix, degToRad(tilt), [1.0, 0.0, 0.0]);
-	
 	
 	//blending
 	var blending = document.getElementById("blending").checked;
@@ -53,8 +49,6 @@ function drawScene() {
 			parseFloat(document.getElementById("directionalB").value)
 		);
 	}
-	drawBox();
-	//drawCage()
 }
 
 function drawSphere(posV,color){
@@ -225,4 +219,10 @@ function drawStopper(){
 	gl.uniform1i(shaderProgram.useLightingUniform, 1);
 	gl.disable(gl.DEPTH_TEST);
 	gl.enable(gl.BLEND);
+}
+
+function clearDisplay(){
+	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+	gl.disable(gl.DEPTH_TEST);
+	gl.disable(gl.BLEND);
 }
