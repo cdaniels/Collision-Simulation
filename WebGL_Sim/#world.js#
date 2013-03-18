@@ -1,4 +1,4 @@
-// global values are used for carrying out important 
+// global values are used fr carrying out important 
 // collision computations
 var position_array = [];
 var velV = [];
@@ -39,7 +39,7 @@ function makeArrayOf(value, length) {
  * Returns a random number between min and max
  */
 function getRandomArbitary (min, max) {
-    return Math.random() * (max - min) + min;
+    return math.random() * (max - min) + min;
 }
 
 function sortVelocity(velocity){
