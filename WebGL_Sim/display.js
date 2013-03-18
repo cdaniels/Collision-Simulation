@@ -57,9 +57,7 @@ function drawScene() {
 	//drawCage()
 }
 
-function drawSphere(posV){
-	//TODO make color editable
-	var ballColor = [1,0,0,1]; 
+function drawSphere(posV,color){
 	
 	//sphere
 	mvPushMatrix();
@@ -80,7 +78,7 @@ function drawSphere(posV){
 		//set texture
 		//gl.activeTexture(gl.TEXTURE0);
 		//gl.bindTexture(gl.TEXTURE_2D, ballTexture);
-		var c =ballColor;
+		var c = color;
 		gl.uniform4f(shaderProgram.colorUniform, c[0],c[1],c[2],c[3]);  // use the color I want
 		gl.bindTexture(gl.TEXTURE_2D, whiteTexture);  // use the white texture
 		
@@ -129,7 +127,7 @@ function drawBox(){
 		gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, cubeVertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
 		gl.activeTexture(gl.TEXTURE0);
 		
-		gl.uniform4f(shaderProgram.colorUniform, 0,.5,0,.5);  // use white color
+		gl.uniform4f(shaderProgram.colorUniform, .2,.5,.2,.5);  // use white color
 		gl.bindTexture(gl.TEXTURE_2D, boxTexture);//for stained glass
 		gl.uniform1i(shaderProgram.samplerUniform, 0);
 		

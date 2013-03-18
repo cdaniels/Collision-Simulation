@@ -71,11 +71,24 @@ function initWorld() {
 
 function handlePhysics(){
 	temp_array = makeArrayOf(0,tick_count);
-	var ball_num = $("#ball_number").html();
-	for(i=0;i < ball_num;i++){
+	var ball_num1 = $("#ball_number").html()/2;
+	for(i=0;i < ball_num1;i++){
 		processCollisions(i);
 		if(document.getElementById("toggle_display").checked){
-			drawSphere(posV[i]);
+			//TODO make color editable
+			var ballColor = [0,0,1,1]; 
+			drawSphere(posV[i],ballColor);
+		}
+		//add velocity to sort array
+		sortVelocity(vec3.clone(velV[i])); //could be before too
+	}
+	var ball_num2 = $("#ball_number").html()/2;
+	for(i=ball_num1;i < ball_num1+ball_num2;i++){
+		processCollisions(i);
+		if(document.getElementById("toggle_display").checked){
+			//TODO make color editable
+			var ballColor = [1,0,0,1]; 
+			drawSphere(posV[i],ballColor);
 		}
 		//add velocity to sort array
 		sortVelocity(vec3.clone(velV[i])); //could be before too
