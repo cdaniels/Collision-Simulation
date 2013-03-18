@@ -99,6 +99,7 @@
 				Ball Speed: <span id=ball_speed>0.2</span><input type="text" name="ball_speed"><br/>
 				Box Length: <span id=box_length>10</span><input type="text" name="box_length"><br/>
 				Volume: <span id=box_volume></span><br/>
+				Compression: <span id=compression>0</span><br/>
 				Pressure: <span id=box_pressure></span><br/>
 				Time Since Start: <span id=run_time></span><br/>
 				<input type="checkbox" id="toggle_display" checked ="True" /> Display Box<br/>
@@ -106,7 +107,8 @@
 				<input type="button" value="Submit" onClick="inputSettings(this.form)">
 			</form>
 			<br />
-			<div id="slider"></div>
+			<div id="volume_slider"></div>
+			<div id="compression_slider"></div>
 			<br />
 		</div>
 		
@@ -157,7 +159,7 @@
 	
 /**dummy function for slider creation**/
 $(function() {
-$( "#slider" ).slider({
+$( "#volume_slider" ).slider({
 		value:0,
 		min:0,
 		max:10,
@@ -165,6 +167,23 @@ $( "#slider" ).slider({
 		slide: function(event, ui) {
 			$("#box_length").text(ui.value);
 			$("#box_volume").html(Math.round(Math.pow(parseFloat($("#box_length").html()),3)));
+			initBuffers();
+		}
+	});
+});
+
+/**dummy function for slider creation**/
+$(function() {
+var side_length = parseFloat($("#box_length").html());
+$( "#compression_slider" ).slider({
+		value:0,
+		min:-2*side_length,
+		max:0,
+		step:0.1,
+		slide: function(event, ui) {
+			//$("#box_length").text(ui.value);
+			//$("#box_volume").html(Math.round(Math.pow(parseFloat($("#box_length").html()),3)));
+			$("#compression").html(ui.value);
 			initBuffers();
 		}
 	});

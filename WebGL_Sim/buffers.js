@@ -19,8 +19,8 @@ var cageVertexPositionBuffer;
 var cageVertexIndexBuffer;
 
 //stopper buffers
-var stopperVertexPositionBuffer;
-var stopperVertexIndexBuffer;
+//var stopperVertexPositionBuffer;
+//var stopperVertexIndexBuffer;
 
 function initBuffers() {
 	//sphere buffers
@@ -285,36 +285,33 @@ function initBuffers() {
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cageVertexIndices), gl.STATIC_DRAW);
     cageVertexIndexBuffer.itemSize = 4;
     cageVertexIndexBuffer.numItems = 20;
-}
-
-    //stopper face position
+    
+    
+	//stopper face position
 	stopperVertexPositionBuffer = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, stopperVertexPositionBuffer);
 	vertices = [
 
       // Bottom face
-		-r,-r, -r,
-		r,-r, -r,
-		r,-r,r,
-		-r,-r,r,
+		r,r, r,
+		r,-r, r,
+		r,-r,-r,
+		r,r,-r,
     ];
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
 	stopperVertexPositionBuffer.itemSize = 3;
-	stopperVertexPositionBuffer.numItems = 8;
+	stopperVertexPositionBuffer.numItems = 4;
 	
 	//index
 	stopperVertexIndexBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, stopperVertexIndexBuffer);
     var stopperVertexIndices = [
 	  0, 1, 2, 3,	 // Top face
-      0, 4, 7, 3,    // Front face
-      2, 6, 7, 3, 	 // Left face
-      2, 6, 5, 1,    // Back face
-      0, 4, 5, 1    // Right face
-      //5, 6, 7, 4    // Right face
     ]
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cageVertexIndices), gl.STATIC_DRAW);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(stopperVertexIndices), gl.STATIC_DRAW);
     stopperVertexIndexBuffer.itemSize = 4;
-    stopperVertexIndexBuffer.numItems = 20;
+    stopperVertexIndexBuffer.numItems = 4;
 }
+
+
 

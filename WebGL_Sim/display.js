@@ -181,3 +181,48 @@ function drawCage(){
 	gl.disable(gl.DEPTH_TEST);
 	gl.enable(gl.BLEND);
 }
+
+function drawStopper(){
+	//wire frame cage
+	gl.disable(gl.BLEND);
+	gl.enable(gl.DEPTH_TEST);
+	gl.uniform1i(shaderProgram.useLightingUniform, 0);
+	mvPushMatrix();
+		old_mat4().identity(mvMatrix);
+		old_mat4().translate(mvMatrix, sceneCenter);
+		old_mat4().translate(mvMatrix, [0.0, 0.0, zoom]);
+		old_mat4().rotate(mvMatrix, degToRad(xRot), [1, 0, 0]);
+		old_mat4().rotate(mvMatrix, degToRad(yRot), [0, 1, 0]);
+		old_mat4().multiply(mvMatrix, sphereRotationMatrix);
+		
+		//adjust for compression
+		var compression = parseFloat($("#compression").html());
+		old_mat4().translate(mvMatrix, [compression, 0.0, 0.0]);
+		
+		//bind position buffer
+		gl.bindBuffer(gl.ARRAY_BUFFER, stopperVertexPositionBuffer);
+		gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, stopperVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+		
+		//bind normal buffer
+		gl.bindBuffer(gl.ARRAY_BUFFER, cubeVertexNormalBuffer);
+		gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, cubeVertexNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);
+		
+		//bind texture buffer
+		gl.bindBuffer(gl.ARRAY_BUFFER, cubeVertexTextureCoordBuffer);
+		gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, cubeVertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
+		gl.activeTexture(gl.TEXTURE0);
+		
+		gl.uniform4f(shaderProgram.colorUniform, 0,0,1,1);  // use white color
+		gl.bindTexture(gl.TEXTURE_2D, whiteTexture);//for stained glass
+		gl.uniform1i(shaderProgram.samplerUniform, 0);
+		
+		//draw
+		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, stopperVertexIndexBuffer);
+		setMatrixUniforms();
+		gl.drawElements(gl.LINE_LOOP, stopperVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+		//gl.drawArrays(gl.TRIANGLE_STRIP, 0, cubeVertexPositionBuffer.numItems);
+	mvPopMatrix();
+	gl.uniform1i(shaderProgram.useLightingUniform, 1);
+	gl.disable(gl.DEPTH_TEST);
+	gl.enable(gl.BLEND);
+}
