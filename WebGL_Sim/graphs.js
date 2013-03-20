@@ -144,7 +144,6 @@ $(function () {
 		for(i=0;i<=totalPoints;i++){
 			ticks.push([i,i.toString()]);
 		}
-		//console.log("ticks are: "+ ticks);
 		return ticks;	
 	};
 	
@@ -177,16 +176,19 @@ $(function () {
 $(function () {
     // we use an inline data source in the example, usually data would
     // be fetched from a server
-    var data = [], totalPoints = 100;
+    var data = [],pres_stats = [], totalPoints = 100;
     function getVolumeData() {
-        if (data.length > 0)
+        if (data.length > 0){
             data = data.slice(1);
+            pres_stats = pres_stats.slice(1);
+		}
 
         // update value with current enclosure volume
         while (data.length < totalPoints) {
             var prev = data.length > 0 ? data[data.length - 1] : 50;
             var y = parseInt($("#box_enclosed").html());
             data.push(y);
+            pres_stats.push(10*parseInt($("#box_pressure").html()));
         }
 
         // zip the generated y values with the x values
@@ -194,10 +196,10 @@ $(function () {
         var pres_data = [];
         for (var i = 0; i < data.length; ++i){
             vol_data.push([i, data[i]]);
-            pres_data.push([i, data[i]]);
+            pres_data.push([i, pres_stats[i]]);
 		}
-		var volDat = {label:'Pressure',color:'green', data:vol_data};
-		var presDat = {label:'Volume',color:'orange', data:pres_data};
+		var volDat = {label:'Pressure',color:'green', data:pres_data};
+		var presDat = {label:'Volume',color:'orange', data:vol_data};
 		return [volDat,presDat];
     }
 

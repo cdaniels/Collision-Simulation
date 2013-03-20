@@ -2,7 +2,32 @@
 // collision computations
 var ball_array = [];
 var impulse_total = 0;
+var momentum_changes = [];
+var impulse_depth = 10;
 var startTime = new Date().getTime();
+
+function averageImpulse(){
+	// update the impulse value
+	var impulse_total = 0;
+	for(i=0;i < impulse_depth;i++) {
+		impulse_total += momentum_changes[i];
+	}
+	var average = momentum_changes/impulse_depth;
+	return average;
+}
+
+/*function sortImpulse(){
+	if (momentum_changes.length > 0){
+		momentum_changes = momentum_changes.slice(1);
+	}
+
+	// update the impulse value
+	while (momentum_changes.length < impulse_depth) {
+		var y = parseInt($("#box_enclosed").html());
+		data.push(y);
+		pres_stats.push(10*parseInt($("#box_pressure").html()));
+	}
+}*/
 
 /**
  * Constructor for Ball object
@@ -118,9 +143,7 @@ function processCollisions(index){
 	vec3.add(iBall.position,iBall.position,iBall.velocity);
 	
 	// collision detection
-	
 	handleBallWallCollisions(iBall);
-	
 	var ball_num =  parseInt($("#ball_number").html());
 	for (var j=0;j<ball_num;j++){
 		jBall = ball_array[j];
@@ -136,17 +159,27 @@ function handleBallWallCollisions(iBall){
 	var iVel = iBall.velocity;
 	var mass = iBall.mass;
 	var radius = iBall.radius;
-	//var bound = $( ".selector" ).slider( "value" );
+	if (momentum_changes.length >= impulse_depth){
+		//$("#ball_number").html(ball_num);
+		momentum_changes = momentum_changes.slice(1);
+	}
+	//console.log(momentum_changes.length);
+	//console.log(impulse_depth);
+	//console.log(momentum_changes.length);
 	if (((iPos[0] - radius <= -bound)&&(iVel[0]<=0))||((iPos[0]  + radius >= bound)&&(iVel[0]>=0))){
 		iVel[0] *= -1; // reverse direction
 		impulse_total += 2*mass*Math.abs(iVel[0]); // add change to total impulse
+		if(iVel[0])momentum_changes.push(2*mass*Math.abs(iVel[0]));
 	}if (((iPos[1] - radius <= -bound)&&(iVel[1]<=0))||((iPos[1] + radius >= bound)&&(iVel[1]>=0))){
 		iVel[1] *= -1; // reverse direction
 		impulse_total += 2*mass*Math.abs(iVel[1]);
+		if(iVel[1])momentum_changes.push(2*mass*Math.abs(iVel[1]));
 	}if (((iPos[2] - radius <= -bound)&&(iVel[2]<=0))||((iPos[2] + radius >= bound)&&(iVel[2]>=0))){
 		iVel[2] *= -1; // reverse direction
 		var z_change = 2*mass*Math.abs(iVel[2]);
 		impulse_total += z_change;
+		if(iVel[2])momentum_changes.push(2*mass*Math.abs(iVel[2]));
+		//if(iVel[2])console.log(momentum_changes[i]);
 	}
 	// check for collision with stopper
 	var compression = parseFloat($("#compression").html());
@@ -154,6 +187,7 @@ function handleBallWallCollisions(iBall){
 	if (((iPos[0]  + radius >= compression+side_length)&&(iVel[0]>=0))){
 		iVel[0] *= -1; // reverse direction
 		impulse_total += 2*mass*Math.abs(iVel[0]); // add change to total impulse
+		if(iVel[0])momentum_changes.push(2*mass*Math.abs(iVel[0]));
 	}
 }
 
