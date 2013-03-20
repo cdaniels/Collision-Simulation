@@ -165,34 +165,69 @@ function processCollisions(index){
 	}
 }
 
+/**
+ * Returns a direction vector for the given wall's normal
+ */
+function getWallDirection(wall){
+	switch (wall) {
+		case 0: //WALL_LEFT
+			return vec3.fromValues(-1, 0, 0);
+		case 1: //WALL_RIGHT
+			return vec3.fromValues(1, 0, 0);
+		case 2: //WALL_FAR
+			return vec3.fromValues(0, 0, -1);
+		case 3: //WALL_NEAR
+			return vec3.fromValues(0, 0, 1);
+		case 4: //WALL_TOP
+			return vec3.fromValues(0, 1, 0);
+		case 5: //WALL_BOTTOM
+			return vec3.fromValues(0, -1, 0);
+		default:
+			return vec3.fromValues(0, 0, 0);
+	}
+}
+
+function testBallWallCollisions(iBall,wall){
+	var bound = parseFloat($("#box_length").html());
+	var iPos = iBall.position;
+	var iVel = iBall.velocity;
+	var mass = iBall.mass;
+	var radius = iBall.radius;
+	
+	var dir = getWallDirection(wall);
+	return (vec3.dot(iPos,dir)+radius > bound && vec3.dot(iVel,dir)>0);
+}
+
 function handleBallWallCollisions(iBall){
 	var bound = parseFloat($("#box_length").html());
 	var iPos = iBall.position;
 	var iVel = iBall.velocity;
 	var mass = iBall.mass;
 	var radius = iBall.radius;
-	/*if (momentum_changes.length >= impulse_depth){
-		//$("#ball_number").html(ball_num);
-		//$("#box_pressure").html(Math.round(impulse_total));//TODO /area and change to /time
-		momentum_changes = momentum_changes.slice(1);
-	}*/
-	//console.log(momentum_changes.length);
-	//console.log(impulse_depth);
-	//console.log(momentum_changes.length);
-	if (((iPos[0] - radius <= -bound)&&(iVel[0]<=0))||((iPos[0]  + radius >= bound)&&(iVel[0]>=0))){
-		iVel[0] *= -1; // reverse direction
-		impulse_total += 2*mass*Math.abs(iVel[0]); // add change to total impulse
-		momentum_changes.push(2*mass*Math.abs(iVel[0]));
-	}if (((iPos[1] - radius <= -bound)&&(iVel[1]<=0))||((iPos[1] + radius >= bound)&&(iVel[1]>=0))){
-		iVel[1] *= -1; // reverse direction
-		impulse_total += 2*mass*Math.abs(iVel[1]);
-		momentum_changes.push(2*mass*Math.abs(iVel[1]));
-	}if (((iPos[2] - radius <= -bound)&&(iVel[2]<=0))||((iPos[2] + radius >= bound)&&(iVel[2]>=0))){
-		iVel[2] *= -1; // reverse direction
-		var z_change = 2*mass*Math.abs(iVel[2]);
-		impulse_total += z_change;
-		momentum_changes.push(2*mass*Math.abs(iVel[2]));
-		//if(iVel[2])console.log(momentum_changes[i]);
+	for(k=0;k<6;k++){
+		if(testBallWallCollisions(iBall,k)){
+			//console.log(testBallWallCollisions(iBall,k));
+			dirV = getWallDirection(k);
+			var ndirV = vec3.create();
+			vec3.normalize(ndirV,dirV);
+			//console.log(ndirV);
+			//iVel[0] *= -1; 
+			var velProj = vec3.create();
+			velProj = vec3.dot(iBall.velocity,ndirV);
+			//console.log(velProj);
+			var velScal = vec3.create();
+			var result = vec3.create();
+			vec3.multiply(velScal,ndirV,vec3.fromValues(velProj,velProj,velProj));
+			vec3.multiply(result,vec3.fromValues(2,2,2),velScal);
+			//console.log(velScal);
+			//console.log(result);
+			var old_vel = vec3.clone(iBall.velocity);
+			vec3.subtract(iBall.velocity,iBall.velocity,result);
+			var deltaV = vec3.distance(iBall.velocity,old_vel);
+			//console.log(deltaV);
+			//console.log(iBall.mass);
+			momentum_changes.push(iBall.mass*deltaV);
+		}
 	}
 	// check for collision with stopper
 	var compression = parseFloat($("#compression").html());

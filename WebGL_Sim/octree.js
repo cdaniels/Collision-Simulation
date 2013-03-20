@@ -1,4 +1,5 @@
 
+
 function Octree(corner1,corner2,depth){
 	this.corner1=corner1;
 	this.corner2=corner2;
