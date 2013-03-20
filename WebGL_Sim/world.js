@@ -82,7 +82,7 @@ function getRandomArbitary (min, max) {
 function initWorld() {
 	var ball_num =  parseInt($("#ball_number").html());
 	var pRange = parseFloat($("#box_length").html());
-	//var vRange = parseFloat($("#ball_speed").html());
+	var vRange = parseFloat($("#ball_speed").html());
 	if(document.getElementById("debug").checked){
 		// special debug mode for testing collision between two balls
 		ball_num = 2;
