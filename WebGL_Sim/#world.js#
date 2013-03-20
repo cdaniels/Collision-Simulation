@@ -1,14 +1,33 @@
-// global values are used fr carrying out important 
+// global values are used for carrying out important 
 // collision computations
-var position_array = [];
-var velV = [];
-
+var ball_array = [];
 var impulse_total = 0;
+var momentum_changes = [];
+var impulse_depth = 10;
 var startTime = new Date().getTime();
 
-var tick_count = 10;
-var temp_array = makeArrayOf(0,tick_count);
-var velRange_array = makeArrayOf(0,tick_count);
+function averageImpulse(){
+	// update the impulse value
+	var impulse_total = 0;
+	for(i=0;i < impulse_depth;i++) {
+		impulse_total += momentum_changes[i];
+	}
+	var average = momentum_changes/impulse_depth;
+	return average;
+}
+
+/*function sortImpulse(){
+	if (momentum_changes.length > 0){
+		momentum_changes = momentum_changes.slice(1);
+	}
+
+	// update the impulse value
+	while (momentum_changes.length < impulse_depth) {
+		var y		var y = parseInt($("#box_enclosed").html());
+		data.push(y);
+		pres_stats.push(10*parseInt($("#box_pressure").html()));
+	}
+}*/
 
 /**
  * Constructor for Ball object
@@ -39,60 +58,60 @@ function makeArrayOf(value, length) {
  * Returns a random number between min and max
  */
 function getRandomArbitary (min, max) {
-    return math.random() * (max - min) + min;
+    return Math.random() * (max - min) + min;
 }
 
-function sortVelocity(velocity){
-	var vRange = parseFloat($("#ball_speed").html());
-	var tick_range = vRange/tick_count;
-	for(j=0;j<=tick_count;j++){
-		var velMag = vec3.length(velocity);
-		if( (velMag > (2*(j) * tick_range))&&
-			(velMag < (2*(j+1) * tick_range))){
-				temp_array[j] += 1;
-		}
-	}
-}
 
 function initWorld() {
 	var ball_num =  parseInt($("#ball_number").html());
-	var bound = parseFloat($("#box_length").html());
-	//var bound = $( ".selector" ).slider( "value" );
-	var pRange = bound;
-	var vRange = parseFloat($("#ball_speed").html());
-	console.log("box_length is: " + bound);
-	console.log("pRange is: " + pRange);
-	console.log("vRange is: " + vRange);
+	var pRange = parseFloat($("#box_length").html());
+	//var vRange = parseFloat($("#ball_speed").html());
 	if(document.getElementById("debug").checked){
 		// special debug mode for testing collision between two balls
 		ball_num = 2;
 		$("#ball_number").html(ball_num);
-		position_array.push(vec3.fromValues(0,0,0));
-		velV.push(vec3.fromValues(0,0,0));
-		position_array.push(vec3.fromValues(5.0,1.0,0.0));
-		velV.push(vec3.fromValues(-vRange,0,0));
+		var ball_1 = new Ball(vec3.fromValues(0,0,0),vec3.fromValues(0,0,0),parseFloat($("#ball_radius").html()),1);
+		ball_array.push(ball_1);
+		var ball_2 = new Ball(vec3.fromValues(5.0,1.0,0.0),vec3.fromValues(-vRange,0,0),parseFloat($("#ball_radius").html()),1);
+		ball_array.push(ball_2);
 	}else{
-		for (var i=0; i < ball_num; i++){
+		for (var i=0; i < ball_num/2; i++){
+			var vRange = parseFloat($("#ball_speed").html());
+			var randPos = vec3.fromValues(getRandomArbitary(-pRange,pRange),getRandomArbitary(-pRange,pRange),getRandomArbitary(-pRange,pRange));
+			//var randVel = vec3.fromValues(getRandomArbitary(-vRange,vRange),getRandomArbitary(-vRange,vRange),getRandomArbitary(-vRange,vRange));
+			var randVel = vec3.fromValues(vRange,vRange,vRange);
+			var iBall = new Ball(randPos,randVel,parseFloat($("#ball_radius").html()),1);
+			//console.log(iBall.position);
+			ball_array.push(iBall);
+			//console.log(ball_array[i].position);
+		}
+		for (var i=ball_num/2; i < ball_num; i++){
+			var vRange = parseFloat($("#ball_speed").html())*0;
 			var randPos = vec3.fromValues(getRandomArbitary(-pRange,pRange),getRandomArbitary(-pRange,pRange),getRandomArbitary(-pRange,pRange));
 			var randVel = vec3.fromValues(getRandomArbitary(-vRange,vRange),getRandomArbitary(-vRange,vRange),getRandomArbitary(-vRange,vRange));
-			position_array.push(randPos);
-			velV.push(randVel);
+			var iBall = new Ball(randPos,randVel,parseFloat($("#ball_radius").html()),1);
+			//console.log(iBall.position);
+			ball_array.push(iBall);
+			//console.log(ball_array[i].position);
 		}
 	}
 }
 
 function handlePhysics(){
 	temp_array = makeArrayOf(0,tick_count);
+	temp_sub1_array = makeArrayOf(0,tick_count);
+	temp_sub2_array = makeArrayOf(0,tick_count);
 	var ball_num1 = $("#ball_number").html()/2;
 	for(i=0;i < ball_num1;i++){
 		processCollisions(i);
 		if(document.getElementById("toggle_display").checked){
 			//TODO make color editable
 			var ballColor = [0,0,1,1]; 
-			drawSphere(position_array[i],ballColor);
+			drawSphere(ball_array[i].position,ballColor);
 		}
 		//add velocity to sort array
-		sortVelocity(vec3.clone(velV[i])); //could be before too
+		sortVelocity(vec3.clone(ball_array[i].velocity)); //could be before too
+		sortSub1(vec3.clone(ball_array[i].velocity)); //could be before too
 	}
 	var ball_num2 = $("#ball_number").html()/2;
 	for(i=ball_num1;i < ball_num1+ball_num2;i++){
@@ -100,13 +119,15 @@ function handlePhysics(){
 		if(document.getElementById("toggle_display").checked){
 			//TODO make color editable
 			var ballColor = [1,0,0,1]; 
-			drawSphere(position_array[i],ballColor);
+			drawSphere(ball_array[i].position,ballColor);
 		}
 		//add velocity to sort array
-		sortVelocity(vec3.clone(velV[i])); //could be before too
+		sortVelocity(vec3.clone(ball_array[i].velocity)); //could be before too
+		sortSub2(vec3.clone(ball_array[i].velocity)); //could be before too
 	}
 	velRange_array = temp_array;
-	//drawBox();
+	velRange_sub1_array = temp_sub1_array;
+	velRange_sub2_array = temp_sub2_array;
 }
 
 function processCollisions(index){
@@ -116,101 +137,102 @@ function processCollisions(index){
 	$("#run_time").html(Math.round(currTime/1000));
 	//$("#box_pressure").html(Math.round(impulse_total));
 	$("#box_pressure").html(Math.round(impulse_total*100000/currTime)/10);
-	//console.log(currTime/1000);
 	
 	//increment position by velocity vector
-	vec3.add(position_array[i],position_array[i],velV[i]);
-	
-	iPos = vec3.clone(position_array[i]);
-	iVel = vec3.clone(velV[i]);
+	iBall = ball_array[i];
+	vec3.add(iBall.position,iBall.position,iBall.velocity);
 	
 	// collision detection
-	var bound = parseFloat($("#box_length").html());
-	//var bound = $( ".selector" ).slider( "value" );
-	var pRange = bound;
-	var radius =  parseFloat($("#ball_radius").html());
-	var mass = 1; // mass for each particle
-	//console.log("radius is: " + radius);
-	
-	handleBallWallCollisions(iPos,iVel,radius,mass);
-	handleBallBallCollisions(iPos,iVel,radius,mass);
-}
-
-function handleBallWallCollisions(iPos,iVel,radius,mass,bound){
-	var bound = parseFloat($("#box_length").html());
-	//var bound = $( ".selector" ).slider( "value" );
-	if (((iPos[0] - radius <= -bound)&&(iVel[0]<=0))||((iPos[0]  + radius >= bound)&&(iVel[0]>=0))){
-		velV[i][0] *= -1; // reverse direction
-		impulse_total += 2*mass*Math.abs(velV[i][0]); // add change to total impulse
-		//setTimeout("impulse_total-=2*Math.abs(velV[i][0])",1000);
-		//console.log(impulse);
-	}if (((iPos[1] - radius <= -bound)&&(iVel[1]<=0))||((iPos[1] + radius >= bound)&&(iVel[1]>=0))){
-		velV[i][1] *= -1;
-		//console.log(impulse);
-		impulse_total += 2*mass*Math.abs(velV[i][1]);
-		//setTimeout("impulse_total-=2*Math.abs(velV[i][1])",1000);
-	}if (((iPos[2] - radius <= -bound)&&(iVel[2]<=0))||((iPos[2] + radius >= bound)&&(iVel[2]>=0))){
-		velV[i][2] *= -1;
-		var z_change = 2*mass*Math.abs(velV[i][2]);
-		impulse_total += z_change;
-		//setTimeout("decrement_impulse(z_change,10000)");
-		//setTimeout("impulse_total-=2*Math.abs(velV[i][2])",1000);
-		//console.log(impulse);
+	handleBallWallCollisions(iBall);
+	var ball_num =  parseInt($("#ball_number").html());
+	for (var j=0;j<ball_num;j++){
+		jBall = ball_array[j];
+		if(i!=j){
+			handleBallBallCollisions(iBall,jBall);
+		}
 	}
 }
 
-function handleBallBallCollisions(iPos,iVel,radius,mass){
-	var ball_num =  parseInt($("#ball_number").html());
-	for (var j=0;j<ball_num;j++){
-		//iPos = vec3.clone(position_array[i]);
-		jPos = vec3.clone(position_array[j]);
-		//iVel = vec3.clone(velV[i]);
-		jVel = vec3.clone(velV[j]);
+function handleBallWallCollisions(iBall){
+	var bound = parseFloat($("#box_length").html());
+	var iPos = iBall.position;
+	var iVel = iBall.velocity;
+	var mass = iBall.mass;
+	var radius = iBall.radius;
+	if (momentum_changes.length >= impulse_depth){
+		//$("#ball_number").html(ball_num);
+		momentum_changes = momentum_changes.slice(1);
+	}
+	//console.log(momentum_changes.length);
+	//console.log(impulse_depth);
+	//console.log(momentum_changes.length);
+	if (((iPos[0] - radius <= -bound)&&(iVel[0]<=0))||((iPos[0]  + radius >= bound)&&(iVel[0]>=0))){
+		iVel[0] *= -1; // reverse direction
+		impulse_total += 2*mass*Math.abs(iVel[0]); // add change to total impulse
+		if(iVel[0])momentum_changes.push(2*mass*Math.abs(iVel[0]));
+	}if (((iPos[1] - radius <= -bound)&&(iVel[1]<=0))||((iPos[1] + radius >= bound)&&(iVel[1]>=0))){
+		iVel[1] *= -1; // reverse direction
+		impulse_total += 2*mass*Math.abs(iVel[1]);
+		if(iVel[1])momentum_changes.push(2*mass*Math.abs(iVel[1]));
+	}if (((iPos[2] - radius <= -bound)&&(iVel[2]<=0))||((iPos[2] + radius >= bound)&&(iVel[2]>=0))){
+		iVel[2] *= -1; // reverse direction
+		var z_change = 2*mass*Math.abs(iVel[2]);
+		impulse_total += z_change;
+		if(iVel[2])momentum_changes.push(2*mass*Math.abs(iVel[2]));
+		//if(iVel[2])console.log(momentum_changes[i]);
+	}
+	// check for collision with stopper
+	var compression = parseFloat($("#compression").html());
+	var side_length = parseFloat($("#box_length").html());
+	if (((iPos[0]  + radius >= compression+side_length)&&(iVel[0]>=0))){
+		iVel[0] *= -1; // reverse direction
+		impulse_total += 2*mass*Math.abs(iVel[0]); // add change to total impulse
+		if(iVel[0])momentum_changes.push(2*mass*Math.abs(iVel[0]));
+	}
+}
 
-		if(i!=j){
-			//var seperation = vec3.create();
-			//vec3.distance(seperation,iPos,jPos);
-			var seperation = vec3.distance(iPos,jPos);
-			//console.log("seperation is: " + seperation);
-			var displacement = vec3.create();
-			var netVelocity = vec3.create();
-			vec3.subtract(displacement,iPos,jPos);
-			vec3.subtract(netVelocity,iVel,jVel);
+function handleBallBallCollisions(iBall,jBall){
+	var iPos = iBall.position;
+	var iVel = iBall.velocity;
+	var mass = iBall.mass;
+	var radius = iBall.radius;
+	var jPos = jBall.position;
+	var jVel = jBall.velocity;
+	var seperation = vec3.distance(iPos,jPos);
+	//console.log("seperation is: " + seperation);
+	var displacement = vec3.create();
+	var netVelocity = vec3.create();
+	vec3.subtract(displacement,iPos,jPos);
+	vec3.subtract(netVelocity,iVel,jVel);
+	
+	// only collide balls headed toward one another
+	if(vec3.dot(netVelocity,displacement)<0){
+		if (seperation <= 2 * radius){
+			//#collision vector
+			//console.log("Collision!");
+			var collisionV = vec3.create();
+			vec3.subtract(collisionV,iPos,jPos);
+			var ncollisionV = vec3.create();
+			vec3.normalize(ncollisionV,collisionV);
+
+			iInit = vec3.dot(iVel,ncollisionV);
+			jInit = vec3.dot(jVel,ncollisionV);
 			
-			// only collide balls headed toward one another
-			if(vec3.dot(netVelocity,displacement)<0){
-				if (seperation <= 2 * radius){
-					//#collision vector
-					//console.log("Collision!");
-					var collisionV = vec3.create();
-					vec3.subtract(collisionV,iPos,jPos);
-					var ncollisionV = vec3.create();
-					vec3.normalize(ncollisionV,collisionV);
-		
-					iInit = vec3.dot(iVel,ncollisionV);
-					jInit = vec3.dot(jVel,ncollisionV);
-					
-					//#elastic collision
-					var iFin = jInit;
-					var jFin = iInit;
-					var iDiff = iFin - iInit;
-					var jDiff = jFin - jInit;
-					var iProj = vec3.create();
-					var jProj = vec3.create();
-					//glm::vec3 iProj = ncollisionV * iDiff ;
-					//glm::vec3 jProj = ncollisionV * jDiff;
-					vec3.multiply(iProj,ncollisionV,vec3.fromValues(iDiff,iDiff,iDiff));
-					vec3.multiply(jProj,ncollisionV,vec3.fromValues(jDiff,jDiff,jDiff));
-					var new_veli = vec3.create();
-					var new_velj = vec3.create();
-					//new_veli = vel_Vectors[i] + iProj;
-					//new_velj = vel_Vectors[j] + jProj;
-					vec3.add(new_veli,iVel,iProj);
-					vec3.add(new_velj,jVel,jProj);
-					velV[i] = new_veli;
-					velV[j] = new_velj;
-				}
-			}
+			//#elastic collision
+			var iFin = jInit;
+			var jFin = iInit;
+			var iDiff = iFin - iInit;
+			var jDiff = jFin - jInit;
+			var iProj = vec3.create();
+			var jProj = vec3.create();
+			vec3.multiply(iProj,ncollisionV,vec3.fromValues(iDiff,iDiff,iDiff));
+			vec3.multiply(jProj,ncollisionV,vec3.fromValues(jDiff,jDiff,jDiff));
+			var new_veli = vec3.create();
+			var new_velj = vec3.create();
+			vec3.add(new_veli,iVel,iProj);
+			vec3.add(new_velj,jVel,jProj);
+			iBall.velocity = new_veli;
+			jBall.velocity  = new_velj;
 		}
 	}
 }
