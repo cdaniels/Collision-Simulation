@@ -61,7 +61,7 @@ function initWorld() {
 		var c2 =  vec3.fromValues(pRange,pRange,pRange);
 		var depth = 6;
 		var octree = new Octree(c1,c2,depth);
-		octree.test();
+		octree.remove(0,0);
 		//console.log(octree.depth);
 	//end Octree test
 	if(document.getElementById("debug").checked){
@@ -152,7 +152,10 @@ function processCollisions(index){
 	
 	//increment position by velocity vector
 	iBall = ball_array[i];
+	var old_pos = vec3.clone(iBall.position);
 	vec3.add(iBall.position,iBall.position,iBall.velocity);
+	//octree.ballMoved(iBall,old_pos);
+	
 	
 	// collision detection
 	handleBallWallCollisions(iBall);
@@ -206,26 +209,21 @@ function handleBallWallCollisions(iBall){
 	var radius = iBall.radius;
 	for(k=0;k<6;k++){
 		if(testBallWallCollisions(iBall,k)){
-			//console.log(testBallWallCollisions(iBall,k));
 			dirV = getWallDirection(k);
 			var ndirV = vec3.create();
 			vec3.normalize(ndirV,dirV);
-			//console.log(ndirV);
-			//iVel[0] *= -1; 
+			
 			var velProj = vec3.create();
 			velProj = vec3.dot(iBall.velocity,ndirV);
-			//console.log(velProj);
+			
 			var velScal = vec3.create();
 			var result = vec3.create();
 			vec3.multiply(velScal,ndirV,vec3.fromValues(velProj,velProj,velProj));
 			vec3.multiply(result,vec3.fromValues(2,2,2),velScal);
-			//console.log(velScal);
-			//console.log(result);
+			
 			var old_vel = vec3.clone(iBall.velocity);
 			vec3.subtract(iBall.velocity,iBall.velocity,result);
 			var deltaV = vec3.distance(iBall.velocity,old_vel);
-			//console.log(deltaV);
-			//console.log(iBall.mass);
 			momentum_changes.push(iBall.mass*deltaV);
 		}
 	}
