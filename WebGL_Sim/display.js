@@ -121,7 +121,7 @@ function drawBox(){
 		gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, cubeVertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
 		gl.activeTexture(gl.TEXTURE0);
 		
-		gl.uniform4f(shaderProgram.colorUniform, .2,.5,.2,.5);  // use white color
+		gl.uniform4f(shaderProgram.colorUniform, .2,.7,.2,.6);  // use white color
 		gl.bindTexture(gl.TEXTURE_2D, boxTexture);//for stained glass
 		gl.uniform1i(shaderProgram.samplerUniform, 0);
 		

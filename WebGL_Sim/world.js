@@ -40,7 +40,7 @@ function getRandomArbitary (min, max) {
 function initWorld() {
 	var ball_num =  parseInt($("#ball_number").html());
 	var pRange = parseFloat($("#box_length").html());
-	var vRange = parseFloat($("#ball_speed").html());
+	//var vRange = parseFloat($("#ball_speed").html());
 	if(document.getElementById("debug").checked){
 		// special debug mode for testing collision between two balls
 		ball_num = 2;
@@ -50,7 +50,18 @@ function initWorld() {
 		var ball_2 = new Ball(vec3.fromValues(5.0,1.0,0.0),vec3.fromValues(-vRange,0,0),parseFloat($("#ball_radius").html()),1);
 		ball_array.push(ball_2);
 	}else{
-		for (var i=0; i < ball_num; i++){
+		for (var i=0; i < ball_num/2; i++){
+			var vRange = parseFloat($("#ball_speed").html());
+			var randPos = vec3.fromValues(getRandomArbitary(-pRange,pRange),getRandomArbitary(-pRange,pRange),getRandomArbitary(-pRange,pRange));
+			//var randVel = vec3.fromValues(getRandomArbitary(-vRange,vRange),getRandomArbitary(-vRange,vRange),getRandomArbitary(-vRange,vRange));
+			var randVel = vec3.fromValues(vRange,vRange,vRange);
+			var iBall = new Ball(randPos,randVel,parseFloat($("#ball_radius").html()),1);
+			//console.log(iBall.position);
+			ball_array.push(iBall);
+			//console.log(ball_array[i].position);
+		}
+		for (var i=ball_num/2; i < ball_num; i++){
+			var vRange = parseFloat($("#ball_speed").html())*0;
 			var randPos = vec3.fromValues(getRandomArbitary(-pRange,pRange),getRandomArbitary(-pRange,pRange),getRandomArbitary(-pRange,pRange));
 			var randVel = vec3.fromValues(getRandomArbitary(-vRange,vRange),getRandomArbitary(-vRange,vRange),getRandomArbitary(-vRange,vRange));
 			var iBall = new Ball(randPos,randVel,parseFloat($("#ball_radius").html()),1);
