@@ -12,6 +12,12 @@ function BallPair(ball1,ball2){
 	this.ball2 = ball2;
 }
 
+function potentialBallBallCollisions(bbp_list,ball_array,_octree){
+}
+
+function potentialBallWallCollisions(bwp_list,ball_array,_octree){
+}
+
 function Octree(corner1,corner2,depth){
 	this.corner1=corner1;
 	this.corner2=corner2;
@@ -129,6 +135,7 @@ function Octree(corner1,corner2,depth){
 			this.fileBall(ball,ball.position,true);
 		}
 		this.balls = [];
+		console.log("balls removed");
 		this.hasChildren = true;
 	}
 	
@@ -153,13 +160,14 @@ function Octree(corner1,corner2,depth){
 	//Removes the specified ball at the indicated position
 	this.remove = function(ball,pos){
 		this.numBalls--;
-		this.hasChildren =true;
-		this.numBalls =4;
+		//this.hasChildren =true;
+		//this.numBalls =4;
 		//console.log("sucess 2: numBalls is: "+this.numBalls);
 		if(this.hasChildren && this.numBalls < MIN_BALLS_PER_OCTREE){
 			this.destroyChildren();
 		}
 		if (this.hasChildren) {
+			//console.log("before fileBall, in remove");
 			this.fileBall(ball, pos, false);
 		}
 		else {
@@ -170,14 +178,18 @@ function Octree(corner1,corner2,depth){
 	}
 	
 	this.add = function(ball){
+		console.log("# of balls before add: "+this.numBalls);
 		//console.log("sucess 2: numBalls is: "+this.numBalls);
-		this.numBalls++;
-		//console.log("sucess 2: numBalls is: "+this.numBalls);
-		if(!this.hasChildren && depth < MAX_BALLS_PER_OCTREE &&
+		this.numBalls ++;
+		//console.log(this.balls.length);
+		console.log("sucess 2: numBalls is: "+this.numBalls);
+		if(!this.hasChildren && depth < MAX_OCTREE_DEPTH &&
 			this.numBalls > MAX_BALLS_PER_OCTREE){
+			console.log("before haveChildren");
 			this.haveChildren();
 		}
 		if (this.hasChildren) {
+			console.log("before fileBall");
 			this.fileBall(ball, ball.position, true);
 		}
 		else {

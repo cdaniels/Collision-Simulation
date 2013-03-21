@@ -1,6 +1,7 @@
 // global values are used for carrying out important 
 // collision computations
 var ball_array = [];
+var _octree = new Octree(0,0,0);
 var impulse_total = 0;
 var momentum_changes = [];
 var impulse_depth = 10;
@@ -60,9 +61,9 @@ function initWorld() {
 		var c1 =  vec3.fromValues(-pRange,-pRange,-pRange);
 		var c2 =  vec3.fromValues(pRange,pRange,pRange);
 		var depth = 0;
-		var octree = new Octree(c1,c2,depth);
+		_octree = new Octree(c1,c2,depth);
 		//octree.remove(0,0);
-		octree.haveChildren();
+		//octree.haveChildren();
 		//console.log(octree.depth);
 	//end Octree test
 	if(document.getElementById("debug").checked){
@@ -160,7 +161,7 @@ function processCollisions(index){
 	iBall = ball_array[i];
 	var old_pos = vec3.clone(iBall.position);
 	vec3.add(iBall.position,iBall.position,iBall.velocity);
-	//octree.ballMoved(iBall,old_pos);
+	_octree.ballMoved(iBall,old_pos);
 	
 	
 	// collision detection
@@ -209,6 +210,9 @@ function testBallWallCollisions(iBall,wall){
 
 function handleBallWallCollisions(iBall){
 	var bound = parseFloat($("#box_length").html());
+	var bbp_list =[];
+	//potentialBallWallCollisions(bwps, balls, octree);
+	
 	var iPos = iBall.position;
 	var iVel = iBall.velocity;
 	var mass = iBall.mass;
@@ -244,6 +248,8 @@ function handleBallWallCollisions(iBall){
 }
 
 function testBallBallCollisions(iBall,jBall){
+	//potentialBallBallCollisions(bbp_list,ball_array,_octree);
+	
 	var iPos = iBall.position;
 	var iVel = iBall.velocity;
 	var jPos = jBall.position;
