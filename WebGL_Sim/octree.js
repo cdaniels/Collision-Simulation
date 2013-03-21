@@ -12,10 +12,12 @@ function BallPair(ball1,ball2){
 	this.ball2 = ball2;
 }
 
-function potentialBallBallCollisions(bbp_list,ball_array,_octree){
+function potentialBallBallCollisions(bbp_list,ball_array,octree){
+	octree.potentialBallBallCollisions(bbp_list);
 }
 
-function potentialBallWallCollisions(bwp_list,ball_array,_octree){
+function potentialBallWallCollisions(bwp_list,ball_array,octree){
+	octree.potentialBallWallCollisions(bwp_list);
 }
 
 function Octree(corner1,corner2,depth){
@@ -25,7 +27,7 @@ function Octree(corner1,corner2,depth){
 	this.center = vec3.create();//linear interpolation determines central vector
 	vec3.lerp(this.center,corner1,corner2,.5);
 	this.depth=depth;
-	console.log("depth: "+depth);
+	//console.log("depth: "+depth);
 	this.numBalls = 0;
 	this.hasChildren = false;
 	
@@ -134,8 +136,9 @@ function Octree(corner1,corner2,depth){
 			var ball = this.balls[b];
 			this.fileBall(ball,ball.position,true);
 		}
+		//console.log(this.balls.length);
 		this.balls = [];
-		console.log("balls removed");
+		//console.log("balls removed");
 		this.hasChildren = true;
 	}
 	
@@ -143,18 +146,18 @@ function Octree(corner1,corner2,depth){
 	//to the "balls" set
 	this.destroyChildren = function(){
 		//Move all balls in descendants of this to the "balls" set
-		this.collectBalls(balls);
+		this.collectBalls(this.balls);
 		
 		for(var x = 0; x < 2; x++) {
 			for(var y = 0; y < 2; y++) {
 				for(var z = 0; z < 2; z++) {
 					delete this.children[x][y][z];
-					console.log("child destroyed");
+					//console.log("child destroyed");
 				}
 			}
 		}
 		this.hasChildren = false;
-		console.log("children destroyed");
+		//console.log("children destroyed");
 	}
 	
 	//Removes the specified ball at the indicated position
@@ -173,28 +176,29 @@ function Octree(corner1,corner2,depth){
 		else {
 			var index = this.balls.indexOf(ball);
 			this.balls.splice(index,1);
-			console.log("ball removed");
+			//console.log("ball removed");
 		}
 	}
 	
 	this.add = function(ball){
-		console.log("# of balls before add: "+this.numBalls);
+		//console.log("# of balls before add: "+this.numBalls);
 		//console.log("sucess 2: numBalls is: "+this.numBalls);
 		this.numBalls ++;
 		//console.log(this.balls.length);
-		console.log("sucess 2: numBalls is: "+this.numBalls);
+		//console.log("sucess 2: numBalls is: "+this.numBalls);
 		if(!this.hasChildren && depth < MAX_OCTREE_DEPTH &&
 			this.numBalls > MAX_BALLS_PER_OCTREE){
-			console.log("before haveChildren");
+			//console.log("before haveChildren");
 			this.haveChildren();
 		}
 		if (this.hasChildren) {
-			console.log("before fileBall");
+			//console.log("before fileBall in add");
 			this.fileBall(ball, ball.position, true);
 		}
 		else {
 			this.balls.push(ball);
-			console.log("ball added");
+			//console.log(this.balls.length);
+			//console.log("ball added");
 		}
 	}
 	
@@ -203,6 +207,15 @@ function Octree(corner1,corner2,depth){
 		this.add(ball);
 		//console.log("sucess 1");
 	} 
+	
+	this.potentialBallWallCollisionsSwitch = function(bwp_list) {
+			this.potentialBallWallCollisions(bwp_list, "WALL_LEFT", 'x', 0);
+			this.potentialBallWallCollisions(bwp_list, "WALL_RIGHT", 'x', 1);
+			this.potentialBallWallCollisions(bwp_list, "WALL_BOTTOM", 'y', 0);
+			this.potentialBallWallCollisions(bwp_list, "WALL_TOP", 'y', 1);
+			this.potentialBallWallCollisions(bwp_list, "WALL_FAR", 'z', 0);
+			this.potentialBallWallCollisions(bwp_list, "WALL_NEAR", 'z', 1);
+	}
 	
 	// bwp_list is the list of ball wall pairs
 	this.potentialBallWallCollisions = function(bwp_list,wall,coord,dir){
@@ -242,7 +255,8 @@ function Octree(corner1,corner2,depth){
 			for(var x = 0; x < 2; x++) {
 				for(var y = 0; y < 2; y++) {
 					for(var z = 0; z < 2; z++) {
-						children[x][y][z].potentialBallBallCollisions(bbp_list);
+						//console.log("calling child in potential bbp :");
+						this.children[x][y][z].potentialBallBallCollisions(bbp_list);
 					}//z close
 				}//y close
 			}//x close
@@ -251,17 +265,28 @@ function Octree(corner1,corner2,depth){
 			//Add all pairs (ball1, ball2) from balls
 			for(b=0;b<this.balls.length;b++){
 				var ball1 = this.balls[b];
+				//console.log("ball1: "+ ball1);
 				for(c=0;c<this.balls.length;c++){
-					var ball2 = this.balls[c];
-					//??This test makes sure that we only add each pair once
-					if(ball1 < ball2){
-						var bbp = BallPair(ball1,ball2);
-						//var bwp = new BallWallPair(ball,wall);
-						bbp_list.push(bbp);
+					// makes sure not to count same ball twice
+					if(c != b){
+						var ball2 = this.balls[c];
+						//console.log("ball2: "+ ball2);
+						
+						//??This test makes sure that we only add each pair once
+						if(c < b){
+							var bbp = new BallPair(ball1,ball2);
+							//console.log("bbp is: "+ bbp);
+							//var bwp = new BallWallPair(ball,wall);
+							bbp_list.push(bbp);
+						}
+						
 					}
 				}
 			}
 		}
+		//console.log("bbp_list element: "+ bbp_list[0]);
+		//console.log("bbp_list is length: "+bbp_list.length);
+		return bbp_list;
 	}
 }
 

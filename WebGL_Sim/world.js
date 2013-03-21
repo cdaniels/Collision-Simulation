@@ -72,10 +72,13 @@ function initWorld() {
 		$("#ball_number").html(ball_num);
 		var ball_1 = new Ball(vec3.fromValues(0,0,0),vec3.fromValues(0,0,0),parseFloat($("#ball_radius").html()),1);
 		ball_array.push(ball_1);
+		_octree.add(ball_1);
 		var ball_2 = new Ball(vec3.fromValues(5.0,1.0,0.0),vec3.fromValues(-vRange,0,0),parseFloat($("#ball_radius").html()),1);
 		ball_array.push(ball_2);
+		_octree.add(ball_2);
 	}else{
-		for (var i=0; i < ball_num/2; i++){
+		// guarantee that uneven ballnum doesnt generate error
+		for (var i=0; i < parseInt(ball_num/2); i++){
 			var vRange = parseFloat($("#ball_speed").html());
 			var randPos = vec3.fromValues(getRandomArbitary(-pRange,pRange),getRandomArbitary(-pRange,pRange),getRandomArbitary(-pRange,pRange));
 			//var randVel = vec3.fromValues(getRandomArbitary(-vRange,vRange),getRandomArbitary(-vRange,vRange),getRandomArbitary(-vRange,vRange));
@@ -83,15 +86,17 @@ function initWorld() {
 			var iBall = new Ball(randPos,randVel,parseFloat($("#ball_radius").html()),1);
 			//console.log(iBall.position);
 			ball_array.push(iBall);
+			_octree.add(iBall);
 			//console.log(ball_array[i].position);
 		}
-		for (var i=ball_num/2; i < ball_num; i++){
+		for (var i=parseInt(ball_num/2); i < ball_num; i++){
 			var vRange = parseFloat($("#ball_speed").html())*0;
 			var randPos = vec3.fromValues(getRandomArbitary(-pRange,pRange),getRandomArbitary(-pRange,pRange),getRandomArbitary(-pRange,pRange));
 			var randVel = vec3.fromValues(getRandomArbitary(-vRange,vRange),getRandomArbitary(-vRange,vRange),getRandomArbitary(-vRange,vRange));
 			var iBall = new Ball(randPos,randVel,parseFloat($("#ball_radius").html()),1);
 			//console.log(iBall.position);
 			ball_array.push(iBall);
+			_octree.add(iBall);
 			//console.log(ball_array[i].position);
 			//octree.add(iBall);
 			//octree.fileBall(iBall,iBall.position,true);
@@ -106,7 +111,7 @@ function handlePhysics(){
 	temp_array = makeArrayOf(0,tick_count);
 	temp_sub1_array = makeArrayOf(0,tick_count);
 	temp_sub2_array = makeArrayOf(0,tick_count);
-	var ball_num1 = $("#ball_number").html()/2;
+	var ball_num1 = parseInt($("#ball_number").html()/2);
 	for(i=0;i < ball_num1;i++){
 		processCollisions(i);
 		if(document.getElementById("toggle_display").checked){
@@ -118,7 +123,7 @@ function handlePhysics(){
 		sortVelocity(vec3.clone(ball_array[i].velocity)); //could be before too
 		sortSub1(vec3.clone(ball_array[i].velocity)); //could be before too
 	}
-	var ball_num2 = $("#ball_number").html()/2;
+	var ball_num2 = parseInt($("#ball_number").html()/2)+$("#ball_number").html()%2;
 	for(i=ball_num1;i < ball_num1+ball_num2;i++){
 		processCollisions(i);
 		if(document.getElementById("toggle_display").checked){
@@ -130,6 +135,8 @@ function handlePhysics(){
 		sortVelocity(vec3.clone(ball_array[i].velocity)); //could be before too
 		sortSub2(vec3.clone(ball_array[i].velocity)); //could be before too
 	}
+	handleBallBallCollisions(ball_array,_octree);
+	handleBallWallCollisions(ball_array,_octree);
 	velRange_array = temp_array;
 	velRange_sub1_array = temp_sub1_array;
 	velRange_sub2_array = temp_sub2_array;
@@ -165,14 +172,14 @@ function processCollisions(index){
 	
 	
 	// collision detection
-	handleBallWallCollisions(iBall);
-	var ball_num =  parseInt($("#ball_number").html());
-	for (var j=0;j<ball_num;j++){
+	//handleBallWallCollisions(iBall);
+	//var ball_num =  parseInt($("#ball_number").html());
+	/*for (var j=0;j<ball_num;j++){
 		jBall = ball_array[j];
 		if(i!=j){
 			handleBallBallCollisions(iBall,jBall);
 		}
-	}
+	}*/
 }
 
 /**
@@ -180,24 +187,29 @@ function processCollisions(index){
  */
 function getWallDirection(wall){
 	switch (wall) {
-		case 0: //WALL_LEFT
+		case "WALL_LEFT": //WALL_LEFT
+		//case 0: //WALL_LEFT
 			return vec3.fromValues(-1, 0, 0);
-		case 1: //WALL_RIGHT
+		//case 1: //WALL_RIGHT
+		case "WALL_RIGHT": //
 			return vec3.fromValues(1, 0, 0);
-		case 2: //WALL_FAR
+		//case 2: //WALL_FAR
+		case "WALL_FAR": //WALL_FAR
 			return vec3.fromValues(0, 0, -1);
-		case 3: //WALL_NEAR
+		//case 3: //WALL_NEAR
+		case "WALL_NEAR": //WALL_NEAR
 			return vec3.fromValues(0, 0, 1);
-		case 4: //WALL_TOP
+		//case 4: //WALL_TOP
+		case "WALL_TOP": //WALL_TOP
 			return vec3.fromValues(0, 1, 0);
-		case 5: //WALL_BOTTOM
+		case "WALL_BOTTOM": //WALL_BOTTOM
 			return vec3.fromValues(0, -1, 0);
 		default:
 			return vec3.fromValues(0, 0, 0);
 	}
 }
 
-function testBallWallCollisions(iBall,wall){
+function testBallWallCollision(iBall,wall){
 	var bound = parseFloat($("#box_length").html());
 	var iPos = iBall.position;
 	var iVel = iBall.velocity;
@@ -208,9 +220,40 @@ function testBallWallCollisions(iBall,wall){
 	return (vec3.dot(iPos,dir)+radius > bound && vec3.dot(iVel,dir)>0);
 }
 
-function handleBallWallCollisions(iBall){
+//Handles all ball-wall collisions
+function handleBallWallCollisions(balls,octree) {
+	var bwp_list = [];
+	octree.potentialBallWallCollisionsSwitch(bwp_list);
+	for(var i = 0; i < bwp_list.length; i++) {
+		var bwp = bwp_list[i];
+		
+		var ball = bwp.ball;
+		var wall = bwp.wall;
+		if (testBallWallCollision(ball,wall)) {
+			//Make the ball reflect off of the wall
+			dirV = getWallDirection(wall);
+			var ndirV = vec3.create();
+			vec3.normalize(ndirV,dirV);
+			
+			var velProj = vec3.create();
+			velProj = vec3.dot(ball.velocity,ndirV);
+			
+			var velScal = vec3.create();
+			var result = vec3.create();
+			vec3.multiply(velScal,ndirV,vec3.fromValues(velProj,velProj,velProj));
+			vec3.multiply(result,vec3.fromValues(2,2,2),velScal);
+			
+			var old_vel = vec3.clone(ball.velocity);
+			vec3.subtract(ball.velocity,ball.velocity,result);
+			var deltaV = vec3.distance(ball.velocity,old_vel);
+			momentum_changes.push(ball.mass*deltaV);
+		}
+	}
+}
+
+/*function handleBallWallCollisions(iBall){
 	var bound = parseFloat($("#box_length").html());
-	var bbp_list =[];
+	var bwp_list =[];
 	//potentialBallWallCollisions(bwps, balls, octree);
 	
 	var iPos = iBall.position;
@@ -245,9 +288,9 @@ function handleBallWallCollisions(iBall){
 		impulse_total += 2*mass*Math.abs(iVel[0]); // add change to total impulse
 		momentum_changes.push(2*mass*Math.abs(iVel[0]));
 	}
-}
+}*/
 
-function testBallBallCollisions(iBall,jBall){
+function testBallBallCollision(iBall,jBall){
 	//potentialBallBallCollisions(bbp_list,ball_array,_octree);
 	
 	var iPos = iBall.position;
@@ -269,7 +312,56 @@ function testBallBallCollisions(iBall,jBall){
 	}
 }
 
-function handleBallBallCollisions(iBall,jBall){
+//Handles all ball-ball collisions
+function handleBallBallCollisions(balls,octree) {
+	var bbp_list = [];
+	potentialBallBallCollisions(bbp_list, balls, octree);
+	for(var i = 0; i < bbp_list.length; i++) {
+		var bbp = bbp_list[i];
+		
+		var b1 = bbp.ball1;
+		var b2 = bbp.ball2;
+		if (testBallBallCollision(b1, b2)) {
+			//Make the balls reflect off of each other
+			var iPos = b1.position;
+			var iVel = b1.velocity;
+			var jPos = b2.position;
+			var jVel = b2.velocity;
+			
+			//#collision vector
+			//console.log("Collision!");
+			var collisionV = vec3.create();
+			vec3.subtract(collisionV,iPos,jPos);
+			var ncollisionV = vec3.create();
+			vec3.normalize(ncollisionV,collisionV);
+
+			iInit = vec3.dot(iVel,ncollisionV);
+			jInit = vec3.dot(jVel,ncollisionV);
+			
+			//#elastic collision
+			var iFin = jInit;
+			var jFin = iInit;
+			var iDiff = iFin - iInit;
+			var jDiff = jFin - jInit;
+			var iProj = vec3.create();
+			var jProj = vec3.create();
+			vec3.multiply(iProj,ncollisionV,vec3.fromValues(iDiff,iDiff,iDiff));
+			vec3.multiply(jProj,ncollisionV,vec3.fromValues(jDiff,jDiff,jDiff));
+			var new_veli = vec3.create();
+			var new_velj = vec3.create();
+			vec3.add(new_veli,iVel,iProj);
+			vec3.add(new_velj,jVel,jProj);
+			b1.velocity = new_veli;
+			b2.velocity  = new_velj;
+		}
+	}
+}
+
+/*function handleBallBallCollisions(iBall,jBall){
+	var bbp_list = [];
+	bbp_list = potentialBallBallCollisions(bbp_list,ball_array,_octree);
+	console.log(bbp_list.length);
+	
 	if (testBallBallCollisions(iBall,jBall)){
 		var iPos = iBall.position;
 		var iVel = iBall.velocity;
@@ -302,6 +394,6 @@ function handleBallBallCollisions(iBall,jBall){
 		iBall.velocity = new_veli;
 		jBall.velocity  = new_velj;
 	}
-}
+}*/
 
 
