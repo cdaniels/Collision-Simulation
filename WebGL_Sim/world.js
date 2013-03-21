@@ -59,9 +59,10 @@ function initWorld() {
 	//Octree test
 		var c1 =  vec3.fromValues(-pRange,-pRange,-pRange);
 		var c2 =  vec3.fromValues(pRange,pRange,pRange);
-		var depth = 6;
+		var depth = 0;
 		var octree = new Octree(c1,c2,depth);
-		octree.remove(0,0);
+		//octree.remove(0,0);
+		octree.haveChildren();
 		//console.log(octree.depth);
 	//end Octree test
 	if(document.getElementById("debug").checked){
@@ -91,6 +92,11 @@ function initWorld() {
 			//console.log(iBall.position);
 			ball_array.push(iBall);
 			//console.log(ball_array[i].position);
+			//octree.add(iBall);
+			//octree.fileBall(iBall,iBall.position,true);
+			//var ball_set = [];
+			//octree.collectBalls(ball_set);
+			//console.log(ball_set.length);
 		}
 	}
 }
