@@ -223,6 +223,7 @@ function testBallWallCollision(iBall,wall){
 	//if (vec3.dot(iPos,dir)+ radius >= compression+side_length &&vec3.dot(iVel,dir)>0){
 	//}
 	//console.log("dir is: "+ dir);
+	//TODO add the stpper check to potentialBallWallPairs
 	if(vec3.dot(dir,vec3.fromValues(1, 0, 0))==1){
 		bound += compression;
 		//console.log("new bound is: "bound);
