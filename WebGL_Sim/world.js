@@ -217,6 +217,16 @@ function testBallWallCollision(iBall,wall){
 	var radius = iBall.radius;
 	
 	var dir = getWallDirection(wall);
+	// check for collision with stopper
+	var compression = parseFloat($("#compression").html());
+	//var side_length = parseFloat($("#box_length").html());
+	//if (vec3.dot(iPos,dir)+ radius >= compression+side_length &&vec3.dot(iVel,dir)>0){
+	//}
+	//console.log("dir is: "+ dir);
+	if(vec3.dot(dir,vec3.fromValues(1, 0, 0))==1){
+		bound += compression;
+		//console.log("new bound is: "bound);
+	}
 	return (vec3.dot(iPos,dir)+radius > bound && vec3.dot(iVel,dir)>0);
 }
 

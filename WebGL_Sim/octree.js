@@ -1,4 +1,4 @@
-const MAX_OCTREE_DEPTH = 6;//or var can be used
+const MAX_OCTREE_DEPTH = 3;//or var can be used
 const MIN_BALLS_PER_OCTREE = 3;
 const MAX_BALLS_PER_OCTREE = 6;
 
@@ -27,17 +27,12 @@ function Octree(corner1,corner2,depth){
 	this.center = vec3.create();//linear interpolation determines central vector
 	vec3.lerp(this.center,corner1,corner2,.5);
 	this.depth=depth;
-	//console.log("depth: "+depth);
+	console.log("child created with depth: "+depth);
 	this.numBalls = 0;
 	this.hasChildren = false;
 	
 	this.children = [[[[],[]],[[],[]]],[[[],[]],[[],[]]]];
-	//this.children = [];
 	this.balls = [];
-	
-	/*this.test = function(){
-		console.log("sucess");
-	}*/
 	
 	//Adds a ball to or removes one from the children of this
 	this.fileBall = function(ball,pos,addBall){
@@ -100,6 +95,7 @@ function Octree(corner1,corner2,depth){
 	
 	//Creates children of this, and moves the balls in this to the children
 	this.haveChildren = function(){
+		console.log("haveChildren called");
 		for(var x = 0; x < 2; x++) {
 			if (x == 0) {
 				var minX = this.corner1[0];
@@ -157,7 +153,7 @@ function Octree(corner1,corner2,depth){
 			}
 		}
 		this.hasChildren = false;
-		//console.log("children destroyed");
+		console.log("children destroyed");
 	}
 	
 	//Removes the specified ball at the indicated position
@@ -186,7 +182,7 @@ function Octree(corner1,corner2,depth){
 		this.numBalls ++;
 		//console.log(this.balls.length);
 		//console.log("sucess 2: numBalls is: "+this.numBalls);
-		if(!this.hasChildren && depth < MAX_OCTREE_DEPTH &&
+		if(!this.hasChildren && this.depth < MAX_OCTREE_DEPTH &&
 			this.numBalls > MAX_BALLS_PER_OCTREE){
 			//console.log("before haveChildren");
 			this.haveChildren();
