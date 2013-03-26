@@ -45,9 +45,14 @@ canvas{
 	text-align:center;
 }
 
-#slider{
+#data_box{
+	display:block;
+	width: 300px;
+}
+
+.slider{
 	width:300px;
-	margin: auto;
+	margin:auto;
 	display:block;
 }
 
