@@ -56,7 +56,8 @@ $(function () {
         for (var i = 0; i <= totalPoints; i++){
             data.push([i, velRange_array[i]]);
 		}
-        return data;
+		var tot_data = {label:'Total System',bars:{align:"right"},data:data};
+        return tot_data;
     }
 
     // setup control widget
@@ -164,7 +165,7 @@ $(function () {
 		options.yaxis.max = parseInt($("#ball_number").html())/2;
 		var data = getSubData();
 		//plot = $.plot($("#graph_3"), [ data.sub1,data.sub2 ], options);
-		plot = $.plot($("#graph_3"), data, options);
+		plot = $.plot($("#graph_2"), data, options);
 		//plot = $.plot($("#graph_3"), [ data.sub2 ], options);
         //plot.draw();
         setTimeout(update, updateInterval);
@@ -223,7 +224,7 @@ $(function () {
         yaxis: { min: 0, max: 1000 },
         xaxis: { show: true }
     };
-    var plot = $.plot($("#graph_2"),getVolumeData(), options);
+    var plot = $.plot($("#graph_3"),getVolumeData(), options);
 
     function update() {
         plot.setData(getVolumeData());

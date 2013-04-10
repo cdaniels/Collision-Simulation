@@ -191,7 +191,7 @@ function drawStopper(){
 		
 		//adjust for compression
 		var compression = parseFloat($("#compression").html());
-		old_mat4().translate(mvMatrix, [compression, 0.0, 0.0]);
+		old_mat4().translate(mvMatrix, [2*compression, 0.0, 0.0]);
 		
 		//bind position buffer
 		gl.bindBuffer(gl.ARRAY_BUFFER, stopperVertexPositionBuffer);

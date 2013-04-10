@@ -23,7 +23,7 @@ canvas{
 	display:block;
 	background-color:#99CCCC;
 	height:auto;
-	width:850px;
+	width:800px;
 	margin: auto;
 }
 
@@ -31,47 +31,99 @@ canvas{
 	display:block;
 	background:tan;
 	border:thin solid black;
-	height: 450px;
+	height: 500px;
 	width:800px;
 	margin:auto;
 }
 
-#settings_box{
+#io_box{
+	/*background:blue;*/
+	width:400px;
 	display:block;
-	width: 400px;
-	margin:30px auto;
-	background:aqua;
-	border:thin solid black;
-	text-align:center;
+	float:left;
 }
 
-#slider{
-	width:300px;
-	margin: auto;
+#io_head_left{
+	width:400px;
+}
+
+
+#display_check{
 	display:block;
+	float:right;
 }
 
 #mycanvas{
 	border: none;
 	float:left;
+	/*background:pink;*/
+}
+
+#settings_box{
+	display:block;
+	float:left;
+	width: 400px;
+	height: 150px;
+	/*padding: auto;
+	margin:30px auto;
+	background:aqua;*/
+}
+
+#input_box{
+	width: 380px;
+	margin:0 0 0 auto;
+	border:thin solid black;
+	text-align:center;
+}
+
+#data_box{
+	display:block;
+	width: 300px;
+}
+
+.slider{
+	width:300px;
+	margin:auto;
+	display:block;
 }
 
 #graph_box{
+	/*background:green;*/
 	height:450px;
 	width: 400px;
 	float:right;
 }
 
-/*#graph_4{
-	border:thin solid line;
-	margin: auto;
-}*/
-
-.graph{
-	width:400px;
+.graph_box{
+	background:green;
 	height:150px;
+	width: 400px;
+	float:right;
+}
+
+.box_left{
+	background:pink;
+	width:20px;
 	float:left;
-	/*float:right;*/
+	height: 150px;
+}
+
+.box_bottom{
+	background:aqua;
+	text-align:center;
+	height:20px;
+	width:380px;
+	float:left;
+}
+
+.box_bottom p{
+	display:block;
+	margin:auto;
+}
+.graph{
+	width:380px;
+	height:130px;
+	float:right;
 }
 
 .hidden{
