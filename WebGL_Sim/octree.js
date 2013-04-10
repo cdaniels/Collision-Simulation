@@ -27,7 +27,7 @@ function Octree(corner1,corner2,depth){
 	this.center = vec3.create();//linear interpolation determines central vector
 	vec3.lerp(this.center,corner1,corner2,.5);
 	this.depth=depth;
-	console.log("child created with depth: "+depth);
+	//console.log("child created with depth: "+depth);
 	this.numBalls = 0;
 	this.hasChildren = false;
 	
@@ -95,7 +95,7 @@ function Octree(corner1,corner2,depth){
 	
 	//Creates children of this, and moves the balls in this to the children
 	this.haveChildren = function(){
-		console.log("haveChildren called");
+		//console.log("haveChildren called");
 		for(var x = 0; x < 2; x++) {
 			if (x == 0) {
 				var minX = this.corner1[0];
@@ -153,7 +153,7 @@ function Octree(corner1,corner2,depth){
 			}
 		}
 		this.hasChildren = false;
-		console.log("children destroyed");
+		//console.log("children destroyed");
 	}
 	
 	//Removes the specified ball at the indicated position

@@ -6,6 +6,7 @@ var impulse_total = 0;
 var momentum_changes = [];
 var impulse_depth = 10;
 var startTime = new Date().getTime();
+var sinceInterval = startTime;
 
 function getRecentImpulse(){
 	// update the impulse value
@@ -154,23 +155,21 @@ function handlePhysics(){
 }
 
 function updateStats(){
-	//averageImpulse();
 	var currTime = new Date().getTime();
-	var elapsedTime = currTime - startTime;
-	var interval = 1; // in seconds
-	$("#run_time").html(Math.round(elapsedTime/1000));
-	//$("#box_pressure").html(Math.round(impulse_total));
-	//console.log(elapsedTime);
-	//$("#box_pressure").html(Math.round(impulse_total*100000/elapsedTime)/10);
+	var elapsedTime = currTime - sinceInterval;
+	var runTime = currTime - startTime;
+	var interval = 2; // in seconds
+	$("#run_time").html(Math.round(runTime/1000));
 	if(elapsedTime >= interval * 1000){
 		var tot_impulse = getRecentImpulse();
-		//console.log(tot_impulse);
 		var side_length = parseFloat($("#box_length").html());
-		var surface_area = 2*side_length*side_length+(4*side_length*side_length);
+		var compression = parseFloat($("#compression").html());
+		var surface_area = 2*side_length*side_length+(4*side_length*(side_length+compression));
+		var presConvFactor = .001;
 		$("#box_area").html(Math.round(surface_area));
-		$("#box_pressure").html(Math.round(tot_impulse/(interval*surface_area)));
+		$("#box_pressure").html(Math.round(tot_impulse/(interval*surface_area*presConvFactor)));
 		momentum_changes = [];
-		startTime = currTime;
+		sinceInterval = currTime;
 	}
 }
 
@@ -222,11 +221,25 @@ function testBallWallCollision(iBall,wall){
 	//if (vec3.dot(iPos,dir)+ radius >= compression+side_length &&vec3.dot(iVel,dir)>0){
 	//}
 	//console.log("dir is: "+ dir);
+	return (vec3.dot(iPos,dir)+radius > bound && vec3.dot(iVel,dir)>0);
+}
+
+function testBallStopperCollisions(iBall){
+	var iPos = iBall.position;
+	var iVel = iBall.velocity;
+	var mass = iBall.mass;
+	var radius = iBall.radius;
+	var bound = parseFloat($("#box_length").html());
+	var compression = parseFloat($("#compression").html());
+	bound += 2*compression;
+	
+	var dir = vec3.fromValues(1, 0, 0);
 	//TODO add the stpper check to potentialBallWallPairs
-	if(vec3.dot(dir,vec3.fromValues(1, 0, 0))==1){
-		bound += compression;
-		//console.log("new bound is: "bound);
-	}
+	/*if(vec3.dot(dir,vec3.fromValues(1, 0, 0))==1){
+		bound += 2*compression;
+		console.log("new bound is: "+bound);
+	}*/
+	
 	return (vec3.dot(iPos,dir)+radius > bound && vec3.dot(iVel,dir)>0);
 }
 
@@ -244,6 +257,21 @@ function handleBallWallCollisions(balls,octree) {
 			dirV = getWallDirection(wall);
 			var ndirV = vec3.create();
 			vec3.normalize(ndirV,dirV);
+			
+			var velProj = vec3.create();
+			velProj = vec3.dot(ball.velocity,ndirV);
+			
+			var velScal = vec3.create();
+			var result = vec3.create();
+			vec3.multiply(velScal,ndirV,vec3.fromValues(velProj,velProj,velProj));
+			vec3.multiply(result,vec3.fromValues(2,2,2),velScal);
+			
+			var old_vel = vec3.clone(ball.velocity);
+			vec3.subtract(ball.velocity,ball.velocity,result);
+			var deltaV = vec3.distance(ball.velocity,old_vel);
+			momentum_changes.push(ball.mass*deltaV);
+		}else if(testBallStopperCollisions(ball)){
+			var ndirV = vec3.fromValues(1, 0, 0);
 			
 			var velProj = vec3.create();
 			velProj = vec3.dot(ball.velocity,ndirV);
