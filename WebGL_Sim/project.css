@@ -70,8 +70,8 @@ canvas{
 }
 
 #input_box{
-	width: 380px;
-	margin:0 0 0 auto;
+	width: 360px;
+	margin:auto;
 	border:thin solid black;
 	text-align:center;
 }
@@ -94,22 +94,43 @@ canvas{
 	float:right;
 }
 
+#graph_box p{
+	color:#505050;
+	font-size:12px;
+}
+
+#distribution_box{
+	border:thin solid grey;
+	height: 300px;
+}
+
+#graph_3_box{
+	margin: 8px 0 0 0;
+	border:thin solid grey;
+}
+
 .graph_box{
-	background:green;
+	/*background:green;*/
 	height:150px;
 	width: 400px;
 	float:right;
 }
 
 .box_left{
-	background:pink;
+	/*background:pink;*/
 	width:20px;
 	float:left;
 	height: 150px;
 }
 
+.box_left p{
+	-webkit-transform: rotate(-90deg);
+	-moz-transform: rotate(-90deg);   
+	-o-transform: rotate(-90deg);
+}
+
 .box_bottom{
-	background:aqua;
+	/*background:aqua;*/
 	text-align:center;
 	height:20px;
 	width:380px;
@@ -120,6 +141,15 @@ canvas{
 	display:block;
 	margin:auto;
 }
+
+#yaxis1_spacer{
+	height:10px;
+}
+
+#yaxis2_spacer{
+	height:70px;
+}
+
 .graph{
 	width:380px;
 	height:130px;
