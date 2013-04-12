@@ -5,6 +5,7 @@ var temp_sub2_array = makeArrayOf(0,tick_count);
 var velRange_array = makeArrayOf(0,tick_count);
 var velRange_sub1_array = makeArrayOf(0,tick_count);
 var velRange_sub2_array = makeArrayOf(0,tick_count);
+var axis_font = {size: 8,family: "sans-serif",variant: "small-caps"};
 
 function sortVelocity(velocity){
 	var vRange = parseFloat($("#ball_speed").html());
@@ -75,9 +76,14 @@ $(function () {
     });
     
     function getTicks(){
+		var speed = parseFloat($("#ball_speed").html());
 		var ticks = [];
 		for(i=0;i<=totalPoints;i++){
-			ticks.push([i,i.toString()]);
+			var scaled_index = Math.round(i*2*speed*100/tick_count)/100;
+			//console.log(scaled_index);
+			//ticks.push([i,(20*i).toString()+"%"]);
+			//ticks.push([i,i.toString()]);
+			ticks.push([i,scaled_index.toString()]);
 		}
 		//console.log("ticks are: "+ ticks);
 		return ticks;	
@@ -87,17 +93,18 @@ $(function () {
     // setup plot
     var options = {
         series: { shadowSize: 0 }, // drawing is faster without shadows
-        yaxis: { min: 0, max: parseInt($("#ball_number").html())},
-        xaxis: { ticks: getTicks()},
+        yaxis: { min: 0, max: parseInt($("#ball_number").html()),font:axis_font},
+        xaxis: { ticks: getTicks(), font:axis_font},
         bars: {
 			show: true,
 			barWidth: 0.8,
-			align: "center"
+			//align: "center"
 		}
     };
     
     function update() {
 		options.yaxis.max = parseInt($("#ball_number").html())/2;
+		options.xaxis.ticks = getTicks();
 		plot = $.plot($("#graph_1"), [ getData() ], options);
         //plot.draw();
         setTimeout(update, updateInterval);
@@ -141,9 +148,12 @@ $(function () {
     });
     
     function getTicks(){
+		var speed = parseFloat($("#ball_speed").html());
 		var ticks = [];
 		for(i=0;i<=totalPoints;i++){
-			ticks.push([i,i.toString()]);
+			var scaled_index = Math.round(i*2*speed*100/tick_count)/100;
+			//ticks.push([i,i.toString()]);
+			ticks.push([i,scaled_index.toString()]);
 		}
 		return ticks;	
 	};
@@ -152,8 +162,8 @@ $(function () {
     // setup plot
     var options = {
         series: { shadowSize: 0 }, // drawing is faster without shadows
-        yaxis: { min: 0, max: parseInt($("#ball_number").html())},
-        xaxis: { ticks: getTicks()},
+        yaxis: { min: 0, max: parseInt($("#ball_number").html()),font:axis_font},
+        xaxis: { ticks: getTicks(),font:axis_font},
         bars: {
 			show: true,
 			barWidth: 0.4,
@@ -163,10 +173,11 @@ $(function () {
     
     function update() {
 		options.yaxis.max = parseInt($("#ball_number").html())/2;
+		options.xaxis.ticks = getTicks();
 		var data = getSubData();
-		//plot = $.plot($("#graph_3"), [ data.sub1,data.sub2 ], options);
 		plot = $.plot($("#graph_2"), data, options);
 		//plot = $.plot($("#graph_3"), [ data.sub2 ], options);
+		//plot.setupGrid();
         //plot.draw();
         setTimeout(update, updateInterval);
     }
@@ -177,27 +188,27 @@ $(function () {
 $(function () {
     // we use an inline data source in the example, usually data would
     // be fetched from a server
-    var data = [],pres_stats = [], totalPoints = 100;
+    var vol_stats = [],pres_stats = [], totalPoints = 100;
     function getVolumeData() {
-        if (data.length > 0){
-            data = data.slice(1);
+        if (vol_stats.length > 0){
+            vol_stats = vol_stats.slice(1);
             pres_stats = pres_stats.slice(1);
 		}
 
         // update value with current enclosure volume
-        while (data.length < totalPoints) {
-            var prev = data.length > 0 ? data[data.length - 1] : 50;
+        while (vol_stats.length < totalPoints) {
+            var prev = vol_stats.length > 0 ? vol_stats[vol_stats.length - 1] : 50;
             var y = parseInt($("#box_enclosed").html());
-            data.push(y);
+            vol_stats.push(y);
             pres_stats.push(10*parseInt($("#box_pressure").html()));
         }
 
         // zip the generated y values with the x values
         var vol_data = [];
         var pres_data = [];
-        for (var i = 0; i < data.length; ++i){
-            vol_data.push([i, data[i]]);
-            pres_data.push([i, pres_stats[i]]);
+        for (var i = 0; i < vol_stats.length; ++i){
+            vol_data.push([(i/10 -10), vol_stats[i]]);
+            pres_data.push([(i/10 -10), pres_stats[i]]);
 		}
 		var volDat = {label:'Pressure',color:'green', data:pres_data};
 		var presDat = {label:'Volume',color:'orange', data:vol_data};
@@ -221,8 +232,8 @@ $(function () {
     // setup plot
     var options = {
         series: { shadowSize: 0 }, // drawing is faster without shadows
-        yaxis: { min: 0, max: 1000 },
-        xaxis: { show: true }
+        yaxis: { min: 0, max: 1000,font:axis_font},
+        xaxis: { show: true, min: -10, max: 0,font:axis_font}
     };
     var plot = $.plot($("#graph_3"),getVolumeData(), options);
 
