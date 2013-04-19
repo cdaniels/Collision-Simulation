@@ -1,0 +1,265 @@
+<!DOCTYPE HTML>
+<html>
+<title>Collision Simulation</title>
+
+<link href="project.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.1/themes/base/jquery-ui.css" />
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script src="http://code.jquery.com/ui/1.10.1/jquery-ui.js"></script>
+<script type="text/javascript" src="jquery.flot.js"></script>
+<script type="text/javascript" src="glMatrix-0.9.5.min.js"></script>
+<script type="text/javascript" src="gl-matrix.js"></script>
+<script type="text/javascript" src="webgl-utils.js"></script>
+<script id="shader-fs" type="x-shader/x-fragment">
+  precision mediump float;
+  
+  //varying vec4 vColor;
+  varying vec2 vTextureCoord;
+  varying vec3 vLightWeighting;
+  
+  uniform vec4 uColor;
+  uniform float uAlpha;
+  
+  uniform sampler2D uSampler;
+
+  void main(void) {
+	vec4 textureColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t)) *  uColor;
+	//gl_FragColor = vColor;
+	//gl_FragColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+	gl_FragColor = vec4(textureColor.rgb * vLightWeighting, textureColor.a * uAlpha);
+  }
+</script>
+
+<script id="shader-vs" type="x-shader/x-vertex">
+  attribute vec3 aVertexPosition;
+  attribute vec3 aVertexNormal;
+  attribute vec2 aTextureCoord;
+
+  uniform mat4 uMVMatrix;//modelview matrix
+  uniform mat4 uPMatrix;//perspective matrix
+  uniform mat3 uNMatrix;//normal matrix
+  
+  //lighting vectors
+  uniform vec3 uAmbientColor;
+
+  uniform vec3 uLightingDirection;
+  uniform vec3 uDirectionalColor;
+
+  uniform bool uUseLighting;
+  
+  //other vectors
+  //varying vec4 vColor;
+  varying vec2 vTextureCoord;
+  varying vec3 vLightWeighting;
+
+  void main(void) {
+    gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+	//vColor = aVertexColor;
+	vTextureCoord = aTextureCoord;
+	
+	if (!uUseLighting) {
+      vLightWeighting = vec3(1.0, 1.0, 1.0);
+    } else {
+      vec3 transformedNormal = uNMatrix * aVertexNormal;
+      float directionalLightWeighting = max(dot(transformedNormal, uLightingDirection), 0.0);
+      vLightWeighting = uAmbientColor + uDirectionalColor * directionalLightWeighting;
+    }
+  }
+</script>
+<script type="text/javascript" src="buffers.js"></script>
+<script type="text/javascript" src="shaders.js"></script>
+<script type="text/javascript" src="textures.js"></script>
+
+<script type="text/javascript" src="octree.js"></script>
+<script type="text/javascript" src="world.js"></script>
+<script type="text/javascript" src="graphs.js"></script>
+
+<script type="text/javascript" src="input.js"></script>
+<script type="text/javascript" src="display.js"></script>
+
+<script type="text/javascript" src="project.js"></script>
+
+</head>
+
+<body onload="webGLStart();">
+	<header>
+    	<h1>Ideal Gas Simulation</h1>
+ 	</header>
+    <div id="content">
+		<div id="display_box">
+			<div id="io_header">
+				<div id="io_head_left">
+				Run Time: <span id="run_time"></span> sec
+				<span id="display_check">
+					Display Box <input type="checkbox" id="toggle_display" checked ="True" />
+				</span>
+				</div>
+			</div>
+			<div id ="io_box">
+				<canvas id="mycanvas" width="400" height="300"></canvas>
+				<div id="settings_box">
+					<div id="compression_slider" class="slider"></div>
+					</br>
+					<div id="input_box">
+						<form name="settings" action="" method="get">
+							Ball Count: <span id=ball_number>100</span><input type="text" name="ball_number" size=1><br/>
+							Ball Radius: <span id=ball_radius>0.5</span><input type="text" name="ball_radius" size=1><br/>
+							Ball Speed: <span id=ball_speed>0.2</span><input type="text" name="ball_speed" size=1><br/>
+							Box Length: <span id=box_length>10</span><input type="text" name="box_length" size=1><br/>
+							<input type="button" value="Submit" onClick="inputSettings(this.form)">
+						</form>
+					</div>
+				</div>
+			</div>
+			<div id="graph_box">
+				<div id="distribution_box">
+					<div id="graph_1_box" class="graph_box">
+						<div class="box_left">
+							<p></p>
+						</div>
+						<div id="graph_1" class="graph"></div>
+						<!--<div class="box_bottom">
+							<p>magnitude of velocity</p>
+						</div>-->
+					</div>
+					<div id="graph_2_box" class="graph_box">
+						<div class="box_left">
+							<div id="yaxis1_spacer"></div>
+							<p>particle_count</p>
+						</div>
+						<div id="graph_2" class="graph"></div>
+						<div class="box_bottom">
+							<p>velocity(m/s)</p>
+						</div>
+					</div>
+				</div>
+				<div id="graph_3_box" class="graph_box">
+					<div class="box_left">
+						<div id="yaxis2_spacer"></div>
+						<p>pressure(Pa)</p>
+					</div>
+					<div id="graph_3" class="graph"></div>
+					<div class="box_bottom">
+						<p>time elapsed(s)</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class=hidden>
+			<div id="data_box">
+				<input type="checkbox" id="debug"/> Debug<br/>
+				<div id="volume_slider" class="slider"></div>
+				Total Volume: <span id=box_volume>1000</span><br/>
+				Surface Area: <span id=box_area>600</span><br/>
+				Volume Enclosed: <span id=box_enclosed>1000</span><br/>
+				Compression: <span id=compression>0</span><br/>
+				Pressure: <span id=box_pressure></span><br/>
+			</div>
+			
+			<input type="checkbox" id="blending" checked /> Use blending<br/>
+			Alpha level <input type="text" id="alpha" value="0.5" /><br/>
+			
+			<input type="checkbox" id="lighting" checked /> Use lighting<br/>
+			(Use cursor keys to spin the box and <code>Page Up</code>/<code>Page Down</code> to zoom out/in)
+
+			<br/>
+			<h2>Directional light:</h2>
+
+			<table style="border: 0; padding: 10px;">
+				<tr>
+					<td><b>Direction:</b>
+					<td>X: <input type="text" id="lightDirectionX" value="-0.25" />
+					<td>Y: <input type="text" id="lightDirectionY" value="-0.25" />
+					<td>Z: <input type="text" id="lightDirectionZ" value="1.0" />
+				</tr>
+				<tr>
+					<td><b>Colour:</b>
+					<td>R: <input type="text" id="directionalR" value="0.8" />
+					<td>G: <input type="text" id="directionalG" value="0.8" />
+					<td>B: <input type="text" id="directionalB" value="0.8" />
+				</tr>
+			</table>
+
+			<h2>Ambient light:</h2>
+			<table style="border: 0; padding: 10px;">
+				<tr>
+					<td><b>Colour:</b>
+					<td>R: <input type="text" id="ambientR" value="0.2" />
+					<td>G: <input type="text" id="ambientG" value="0.2" />
+					<td>B: <input type="text" id="ambientB" value="0.2" />
+				</tr>
+			</table>
+
+		</div>
+    </div>
+	<footer>
+    	<p>copyright 2012 all rights reserved</p>
+    </footer>
+    <div class="hidden">
+		<img id="grid_tex" src="textures/grid.gif" alt="grid texture"> 
+		<img id="moon_tex" src="textures/moon.gif" alt="moon texture"> 
+    </div>
+</body>
+<script>
+	
+/**dummy function for slider creation**/
+$(function() {
+$( "#volume_slider" ).slider({
+		value:0,
+		min:0,
+		max:10,
+		step:0.1,
+		slide: function(event, ui) {
+			$("#box_length").text(ui.value);
+			$("#box_volume").html(Math.round(Math.pow(parseFloat($("#box_length").html()),3)));
+			initBuffers();
+		}
+	});
+});
+
+/**dummy function for slider creation**/
+$(function() {
+	var side_length = parseFloat($("#box_length").html());
+	$( "#compression_slider" ).slider({
+		value:0,
+		min:-side_length,
+		max:0,
+		step:0.1,
+		slide: function(event, ui) {
+			$("#compression").html(ui.value);
+			side_length = parseFloat($("#box_length").html());
+			var stop_distance = ((ui.value+side_length));
+			$("#box_enclosed").html(Math.round(parseFloat((side_length*side_length*stop_distance))));
+			initBuffers();
+		}
+	});
+});
+
+/**simple call to refresh the page**/
+function checkRefresh(value)
+{
+	document.settings.submit();
+}
+
+/**
+inputs imports system parameters on submit button
+press
+**/
+function inputSettings(form){
+	$("#ball_number").html(form.ball_number.value);
+	$("#ball_radius").html(form.ball_radius.value);
+	$("#ball_speed").html(form.ball_speed.value);
+	$("#box_length").html(form.box_length.value);
+	$("#box_volume").html(Math.round(Math.pow(parseFloat($("#box_length").html()),3)));
+	//$("#box_volume").html(Math.round(Math.pow(parseFloat($("#box_length").html()),3)));
+	//console.log("sucess!");
+	
+	//restart program
+	impulse_total = 0;
+	ball_array = [];
+	startTime = new Date().getTime();
+	webGLStart();
+	//window.location.reload();
+}</script>
+</html>
